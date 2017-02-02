@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"strictNullChecks": true,
+		"module": "commonjs",
+		"target": "es5",
+		"declaration": false,
+		"noEmit": true,
+		"newLine": "LF",
+		"outDir": "lib",
+		"noImplicitAny": true,
+		"allowJs": false,
+		"baseUrl": "..",
+		"moduleResolution": "node",
+		"lib": [
+			"es2015"
+		]
+	},
+	"include": [
+		"../typings/*.d.ts",
+		"../src/**/*.ts",
+		"**/*.ts"
+	]
+}

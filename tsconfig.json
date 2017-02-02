@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "strictNullChecks": true,
+        "module": "commonjs",
+        "target": "es2015",
+        "declaration": true,
+        "noEmit": false,
+        "newLine": "LF",
+        "outDir": "lib",
+        "noImplicitAny": true,
+        "allowJs": false,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "node",
+        "lib": [
+            "es2015"
+        ]
+    },
+    "include": [
+        "typings/*.d.ts",
+        "src/**/*.ts"
+    ]
+}
