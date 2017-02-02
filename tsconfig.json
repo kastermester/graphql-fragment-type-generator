@@ -8,6 +8,8 @@
         "newLine": "LF",
         "outDir": "lib",
         "noImplicitAny": true,
+        "sourceMap": true,
+        "sourceRoot": "src",
         "allowJs": false,
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "node",

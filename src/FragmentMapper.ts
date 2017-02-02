@@ -5,12 +5,15 @@ import {
 	visitWithTypeInfo,
 	FieldNode,
 	FragmentDefinitionNode,
+	GraphQLInterfaceType,
 	GraphQLList,
 	GraphQLNonNull,
 	GraphQLObjectType,
 	GraphQLOutputType,
 	GraphQLScalarType,
 	GraphQLSchema,
+	GraphQLUnionType,
+	InlineFragmentNode,
 	Source,
 	TypeInfo,
 } from 'graphql';
@@ -22,6 +25,7 @@ function transformType(type: GraphQLOutputType): {
 } {
 	let leafGraphQLType = type;
 	const transformType: ((innerType: T.FragmentType) => T.FragmentType)[] = [];
+	let isScalarType = false;
 	while (true) {
 		const currentType = leafGraphQLType;
 		if (currentType instanceof GraphQLNonNull) {
@@ -42,20 +46,21 @@ function transformType(type: GraphQLOutputType): {
 			leafGraphQLType = currentType.ofType;
 			continue;
 		}
-		if ((leafGraphQLType instanceof GraphQLObjectType) || (leafGraphQLType instanceof GraphQLScalarType)) {
-			break;
+		if (leafGraphQLType instanceof GraphQLScalarType) {
+			isScalarType = true;
 		}
+		break;
 	}
 
-	const leafType: T.ScalarType | T.ObjectType = leafGraphQLType instanceof GraphQLObjectType ? {
-		displayableName: null,
+	const leafType: T.ScalarType | T.ObjectType = !isScalarType ? {
 		fields: [],
+		fragmentSpreads: [],
 		kind: 'Object',
 		schemaType: leafGraphQLType as GraphQLObjectType,
 	} : {
-		kind: 'Scalar',
-		schemaType: leafGraphQLType as GraphQLScalarType,
-	};
+			kind: 'Scalar',
+			schemaType: leafGraphQLType as GraphQLScalarType,
+		};
 	const fragmentType = transformType.reverse().reduce(
 		(t, transformer) => transformer(t),
 		leafType as T.FragmentType,
@@ -114,11 +119,27 @@ export function mapFragmentType(schema: GraphQLSchema, fragmentText: string): T.
 					throw new Error('Expected a single fragment');
 				}
 				stack.push({
-					displayableName: fragment.name.value,
 					fields: [],
+					fragmentSpreads: [],
 					kind: 'Object',
 					schemaType: typeInfo.getType() as GraphQLObjectType,
 				})
+			},
+		},
+		InlineFragment: {
+			enter(fragmentSpread: InlineFragmentNode) {
+				const objectType: T.ObjectType = {
+					fields: [],
+					fragmentSpreads: [],
+					kind: 'Object',
+					schemaType: typeInfo.getType() as GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType,
+				};
+				const currentType = getCurrentType();
+				currentType.fragmentSpreads.push(objectType);
+				stack.push(objectType);
+			},
+			leave(fragmentSpread: InlineFragmentNode) {
+				stack.pop();
 			},
 		},
 	};

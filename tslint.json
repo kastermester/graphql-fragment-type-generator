@@ -38,7 +38,7 @@
             true,
             "LF"
         ],
-        "arrow-parens": true,
+        "arrow-parens": false,
         "comment-format": [
             true,
             "check-space"
