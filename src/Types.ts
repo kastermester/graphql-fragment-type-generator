@@ -1,11 +1,12 @@
 import {
+	GraphQLEnumType,
 	GraphQLInterfaceType,
 	GraphQLList,
 	GraphQLNonNull,
 	GraphQLObjectType,
 	GraphQLOutputType,
 	GraphQLScalarType,
-	GraphQLUnionType
+	GraphQLUnionType,
 } from 'graphql';
 export type NullableFragmentType = ObjectType | ListType | ScalarType;
 export type FragmentType = NullableFragmentType | NonNullType;
@@ -39,12 +40,23 @@ export interface FlattenedSpecificObjectType {
 	schemaType: GraphQLObjectType;
 }
 
-export interface FlattenedObjectType {
+export interface FlattenedSingleOjectType {
 	kind: 'Object';
+	objectKind: 'Single';
 	fields: FlattenedFieldInfo[];
+	schemaTypes: GraphQLObjectType[];
+	fragmentSpreads: null;
+}
+
+export interface FlattenedSpreadsObjectType {
+	kind: 'Object';
+	objectKind: 'Spread';
+	fields: null;
 	schemaTypes: GraphQLObjectType[];
 	fragmentSpreads: FlattenedSpecificObjectType[]
 }
+
+export type FlattenedObjectType = FlattenedSingleOjectType | FlattenedSpreadsObjectType;
 
 export interface FlattenedListType {
 	kind: 'List';
@@ -72,5 +84,6 @@ export interface NonNullType {
 
 export interface ScalarType {
 	kind: 'Scalar';
-	schemaType: GraphQLScalarType;
+	knownPossibleValues: any[] | null;
+	schemaType: GraphQLScalarType | GraphQLEnumType;
 }

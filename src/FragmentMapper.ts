@@ -1,10 +1,12 @@
 import {
 	getNullableType,
 	parse,
+	validate,
 	visit,
 	visitWithTypeInfo,
 	FieldNode,
 	FragmentDefinitionNode,
+	GraphQLEnumType,
 	GraphQLInterfaceType,
 	GraphQLList,
 	GraphQLNonNull,
@@ -26,6 +28,7 @@ function transformType(type: GraphQLOutputType): {
 	let leafGraphQLType = type;
 	const transformType: ((innerType: T.FragmentType) => T.FragmentType)[] = [];
 	let isScalarType = false;
+	let knownValues = null;
 	while (true) {
 		const currentType = leafGraphQLType;
 		if (currentType instanceof GraphQLNonNull) {
@@ -49,6 +52,10 @@ function transformType(type: GraphQLOutputType): {
 		if (leafGraphQLType instanceof GraphQLScalarType) {
 			isScalarType = true;
 		}
+		if (leafGraphQLType instanceof GraphQLEnumType) {
+			isScalarType = true;
+			knownValues = leafGraphQLType.getValues().map(v => v.value);
+		}
 		break;
 	}
 
@@ -59,6 +66,7 @@ function transformType(type: GraphQLOutputType): {
 		schemaType: leafGraphQLType as GraphQLObjectType,
 	} : {
 			kind: 'Scalar',
+			knownPossibleValues: knownValues,
 			schemaType: leafGraphQLType as GraphQLScalarType,
 		};
 	const fragmentType = transformType.reverse().reduce(
@@ -73,6 +81,10 @@ function transformType(type: GraphQLOutputType): {
 
 export function mapFragmentType(schema: GraphQLSchema, fragmentText: string): T.ObjectType {
 	const ast = parse(new Source(fragmentText.replace(/fragment\s+on\s+/, 'fragment RootFragment on '), 'Fragment'));
+	const errors = validate(schema, ast);
+	if (errors.length > 1) {
+		throw new Error(errors[0].toString());
+	}
 	const stack: T.ObjectType[] = [];
 	const getCurrentType = () => {
 		if (stack.length === 0) {
