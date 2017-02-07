@@ -150,8 +150,9 @@ function scalarTypeToTSType(type: GraphQLScalarType): string {
 export function printType(
 	nullable: boolean,
 	type: T.FlattenedType,
-	indentLevel: number = 0,
+	indentLevel?: number,
 ): string {
+	indentLevel = indentLevel != null ? indentLevel : 0;
 	const wrap = (t: string) => nullable ? `(${t}) | null` : t;
 	switch (type.kind) {
 		case 'Scalar': {
