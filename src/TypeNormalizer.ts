@@ -104,7 +104,7 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 
 	if (fields.length === 0 && spreads.length === 1) {
 		return {
-			fields: spreads[0].fields,
+			fields: mapWithConstantTypeNameValues(spreads[0].fields, spreads[0].schemaType),
 			fragmentSpreads: null,
 			kind: 'Object',
 			objectKind: 'Single',
@@ -120,9 +120,14 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 		} as T.FlattenedSpecificObjectType;
 	});
 
+	const collapsedSpreads = collapseFragmentSpreads(schema, [], spreads.concat(fieldsToSpreads));
 	return {
 		fields: null,
-		fragmentSpreads: collapseFragmentSpreads(schema, [], spreads.concat(fieldsToSpreads)),
+		fragmentSpreads: collapsedSpreads.map(s => ({
+			fields: mapWithConstantTypeNameValues(s.fields, s.schemaType),
+			kind: 'SpecificObject',
+			schemaType: s.schemaType,
+		} as T.FlattenedSpecificObjectType)),
 		kind: 'Object',
 		objectKind: 'Spread',
 		schemaTypes: possibleTypes,
@@ -317,7 +322,7 @@ function mapWithConstantTypeNameValues(
 					kind: 'NonNull',
 					nullableType: {
 						kind: 'Scalar',
-						knownPossibleValues: types,
+						knownPossibleValues: possibleTypes,
 					},
 				} as T.FlattenedNonNullType,
 			};
