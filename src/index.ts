@@ -27,13 +27,31 @@ fragment on Project {
 				trail {
 					title
 				}
+				... on ProjectTask {
+					assignees {
+						edges {
+							node {
+								name
+							}
+						}
+					}
+				}
 			}
 		}
 	}
 }`;
 
 const res = mapFragmentType(schema, fragment);
+console.log('Initial parsed output');
+console.log();
 printObjectType(res);
+
 const flattened = normalizeType(schema, res);
+console.log();
+console.log('Flattened output');
+console.log();
 printFlattedObjectType(flattened);
+console.log();
+console.log('Generated type');
+console.log();
 console.log(printType(true, flattened, 0));
