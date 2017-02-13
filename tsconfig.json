@@ -2,7 +2,7 @@
     "compilerOptions": {
         "strictNullChecks": true,
         "module": "commonjs",
-        "target": "es2015",
+        "target": "es5",
         "declaration": true,
         "noEmit": false,
         "newLine": "LF",
@@ -14,11 +14,13 @@
         "forceConsistentCasingInFileNames": true,
         "moduleResolution": "node",
         "lib": [
-            "es2015"
+            "es2015",
+            "es2016",
+            "es2017"
         ]
     },
     "include": [
-        "typings/*.d.ts",
+        "types/*.d.ts",
         "src/**/*.ts"
     ]
 }

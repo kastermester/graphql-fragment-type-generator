@@ -11,7 +11,7 @@ import {
 export type NullableFragmentType = ObjectType | ListType | ScalarType;
 export type FragmentType = NullableFragmentType | NonNullType;
 
-export type FlattenedNullableType = FlattenedObjectType | FlattenedListType | ScalarType;
+export type FlattenedNullableType = FlattenedObjectType | FlattenedListType | ScalarType | ReferencedType;
 export type FlattenedType = FlattenedNullableType | FlattenedNonNullType;
 export interface FieldInfo {
 	fieldName: string;
@@ -40,6 +40,14 @@ export interface FlattenedSpecificObjectType {
 	schemaType: GraphQLObjectType;
 }
 
+export interface FlattenedRestObjectType {
+	kind: 'RestObject';
+	fields: FlattenedFieldInfo[];
+	schemaTypes: GraphQLObjectType[];
+}
+
+export type FlattenedSpreadType = FlattenedSpecificObjectType | FlattenedRestObjectType;
+
 export interface FlattenedSingleOjectType {
 	kind: 'Object';
 	objectKind: 'Single';
@@ -48,12 +56,14 @@ export interface FlattenedSingleOjectType {
 	fragmentSpreads: null;
 }
 
+// If fragmentSpreads.length < schemaTypes.length, then, when generating the type for
+// this fragment, the empty object type must be included.
 export interface FlattenedSpreadsObjectType {
 	kind: 'Object';
 	objectKind: 'Spread';
 	fields: null;
 	schemaTypes: GraphQLObjectType[];
-	fragmentSpreads: FlattenedSpecificObjectType[]
+	fragmentSpreads: FlattenedSpreadType[];
 }
 
 export type FlattenedObjectType = FlattenedSingleOjectType | FlattenedSpreadsObjectType;
@@ -86,4 +96,9 @@ export interface ScalarType {
 	kind: 'Scalar';
 	knownPossibleValues: any[] | null;
 	schemaType: GraphQLScalarType | GraphQLEnumType;
+}
+
+export interface ReferencedType {
+	kind: 'Reference';
+	names: string[];
 }

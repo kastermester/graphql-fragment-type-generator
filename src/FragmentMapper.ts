@@ -4,6 +4,7 @@ import {
 	validate,
 	visit,
 	visitWithTypeInfo,
+	DocumentNode,
 	FieldNode,
 	FragmentDefinitionNode,
 	GraphQLEnumType,
@@ -79,20 +80,16 @@ function transformType(type: GraphQLOutputType): {
 	};
 }
 
-export function mapFragmentType(schema: GraphQLSchema, fragmentText: string): T.ObjectType {
-	const ast = parse(new Source(fragmentText.replace(/fragment\s+on\s+/, 'fragment RootFragment on '), 'Fragment'));
-	const errors = validate(schema, ast);
-	if (errors.length > 1) {
-		throw new Error(errors[0].toString());
-	}
+export function mapFragmentType(schema: GraphQLSchema, ast: DocumentNode, removeFieldsNamed?: string[]): T.ObjectType {
 	const stack: T.ObjectType[] = [];
 	const getCurrentType = () => {
 		if (stack.length === 0) {
 			throw new Error('Expected a non empty stack');
 		}
 		return stack[stack.length - 1];
-	}
+	};
 	const typeInfo = new TypeInfo(schema);
+	const ignoredNames = removeFieldsNamed == null ? new Set<string>() : new Set<string>(removeFieldsNamed);
 	const visitor = {
 		Field: {
 			enter(field: FieldNode) {
@@ -100,7 +97,9 @@ export function mapFragmentType(schema: GraphQLSchema, fragmentText: string): T.
 				const type = typeInfo.getType();
 				const fieldName = field.name.value;
 				const resultFieldName = field.alias != null ? field.alias.value : field.name.value;
-
+				if (ignoredNames.has(resultFieldName)) {
+					return;
+				}
 				if (field.selectionSet != null) {
 					const fieldTypeInfo = transformType(type as GraphQLObjectType);
 					stack.push(fieldTypeInfo.leafType as T.ObjectType);
@@ -116,7 +115,7 @@ export function mapFragmentType(schema: GraphQLSchema, fragmentText: string): T.
 						resultFieldName: resultFieldName,
 						schemaType: type,
 						type: transformType(type).fragmentType,
-					})
+					});
 				}
 			},
 			leave(field: FieldNode) {
@@ -135,7 +134,7 @@ export function mapFragmentType(schema: GraphQLSchema, fragmentText: string): T.
 					fragmentSpreads: [],
 					kind: 'Object',
 					schemaType: typeInfo.getType() as GraphQLObjectType,
-				})
+				});
 			},
 		},
 		InlineFragment: {

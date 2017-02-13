@@ -5,6 +5,7 @@ import {
 	GraphQLScalarType,
 } from 'graphql';
 import * as T from './Types';
+// tslint:disable:no-console
 
 export function printObjectType(type: T.ObjectType): void {
 	console.log('Fragment on ' + type.schemaType.name + ' {');
@@ -39,6 +40,7 @@ function objecTypeOrNull(type: T.FragmentType): T.ObjectType | null {
 
 function flattenedObjecTypeOrNull(type: T.FlattenedType): T.FlattenedObjectType | null {
 	switch (type.kind) {
+		case 'Reference': // FALLTHROUGH
 		case 'Scalar':
 			return null;
 		case 'List':
@@ -79,7 +81,6 @@ function printFragments(fragments: T.ObjectType[], indentLevel: number): void {
 	}
 }
 
-
 function printFlattenedObjectTypeFields(type: T.FlattenedObjectType, indentLevel: number): void {
 	const indents = indent(indentLevel);
 	if (type.objectKind === 'Single') {
@@ -104,7 +105,7 @@ function printFlattenedObjectTypeFields(type: T.FlattenedObjectType, indentLevel
 	console.log(`${indents})`);
 }
 
-function printSpecificObjectTypeFields(type: T.FlattenedSpecificObjectType, indentLevel: number): void {
+function printSpecificObjectTypeFields(type: T.FlattenedSpreadType, indentLevel: number): void {
 	const indents = indent(indentLevel);
 	for (const field of type.fields) {
 		const alias = (field.resultFieldName !== field.fieldName) ?
@@ -122,7 +123,7 @@ function printSpecificObjectTypeFields(type: T.FlattenedSpecificObjectType, inde
 	}
 }
 
-function printFlattenedFragments(fragments: T.FlattenedSpecificObjectType[], indentLevel: number): void {
+function printFlattenedFragments(fragments: T.FlattenedSpreadType[], indentLevel: number): void {
 	const indents = indent(indentLevel);
 	let first = true;
 	for (const fragment of fragments) {
@@ -130,7 +131,10 @@ function printFlattenedFragments(fragments: T.FlattenedSpecificObjectType[], ind
 			console.log(`${indents}|`);
 		}
 		first = false;
-		console.log(`${indents}... on ${fragment.schemaType.name} {`);
+		const types = fragment.kind === 'SpecificObject' ?
+			fragment.schemaType.name :
+			fragment.schemaTypes.map(t => t.name).join(' | ');
+		console.log(`${indents}... on ${types} {`);
 		printSpecificObjectTypeFields(fragment, indentLevel + 2);
 		console.log(`${indents}}`);
 	}
@@ -153,8 +157,16 @@ export function printType(
 	indentLevel?: number,
 ): string {
 	indentLevel = indentLevel != null ? indentLevel : 0;
-	const wrap = (t: string) => nullable ? `(${t}) | null` : t;
+	const wrap = (t: string) => {
+		if (!nullable) {
+			return t;
+		}
+		return `${t} | null`;
+	};
 	switch (type.kind) {
+		case 'Reference': {
+			return wrap(type.names.join(' | '));
+		}
 		case 'Scalar': {
 			if (type.knownPossibleValues != null) {
 				return wrap(type.knownPossibleValues.map(e => JSON.stringify(e)).join(' | '));
@@ -165,10 +177,10 @@ export function printType(
 			return printType(false, type.nullableType, indentLevel + 2);
 		}
 		case 'List': {
-			const nullableElement = type.elementType.kind !== 'NonNull';
+			const complexElementType = isParenAroundTypeNeeded(type.elementType);
 			const elementType = printType(true, type.elementType, indentLevel);
 			return wrap(
-				nullableElement ?
+				complexElementType ?
 					`(${elementType})[]` :
 					`${elementType}[]`,
 			);
@@ -176,10 +188,14 @@ export function printType(
 		case 'Object': {
 			const nullableWrapper = nullable ? ' | null' : '';
 			const printFields = (fields: T.FlattenedFieldInfo[], i: number) => {
+				if (fields.length === 0) {
+					return '{}';
+				}
 				const indents = ' '.repeat(i);
 				const buffer: string[] = [`{`];
 				fields.forEach(f => {
-					buffer.push(`${indents + '  '}${f.resultFieldName}: ${printType(true, f.type, i + 4)};`);
+					const fieldName = f.resultFieldName === '' ? `''` : f.resultFieldName;
+					buffer.push(`${indents + '  '}${fieldName}: ${printType(true, f.type, i + 4)};`);
 				});
 				buffer.push(`${indents}}`);
 				return buffer.join('\n');
@@ -189,15 +205,39 @@ export function printType(
 			} else {
 				const buffer: string[] = [];
 				type.fragmentSpreads.forEach((spread) => {
-					buffer.push(printFields(spread.fields, indentLevel + 2));
+					buffer.push(printFields(spread.fields, indentLevel as number));
 				});
 				const indents = ' '.repeat(indentLevel);
 				const nl = '\n' + indents;
-				return `(${nl}${buffer.join(nl + ' | ')}${nl})${nullableWrapper}`;
+				return `${buffer.join(' | ')}${nullableWrapper}`;
 			}
 		}
 		default: {
 			throw new Error('Unknown type');
 		}
 	}
+}
+
+function isParenAroundTypeNeeded(type: T.FlattenedType): boolean {
+	if (type.kind !== 'NonNull') {
+		return true;
+	}
+
+	const innerType = type.nullableType;
+
+	if (innerType.kind === 'List') {
+		return false;
+	}
+
+	if (innerType.kind === 'Scalar') {
+		if (innerType.knownPossibleValues == null || innerType.knownPossibleValues.length === 1) {
+			return false;
+		}
+		return true;
+	}
+	if (innerType.kind === 'Object') {
+		return innerType.objectKind === 'Single' || innerType.fragmentSpreads.length === 1;
+	}
+
+	return innerType.names.length === 1;
 }

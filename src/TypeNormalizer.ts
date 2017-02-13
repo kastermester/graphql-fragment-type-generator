@@ -1,6 +1,7 @@
 import {
 	GraphQLInterfaceType,
 	GraphQLObjectType,
+	GraphQLScalarType,
 	GraphQLSchema,
 	GraphQLUnionType,
 } from 'graphql';
@@ -73,7 +74,7 @@ function flattenFragmentSpread(
 }
 
 export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.FlattenedObjectType {
-	const possibleTypes = possibleTypesForType(schema, type.schemaType);
+	const possibleTypes = sortBy(possibleTypesForType(schema, type.schemaType), (t) => t.name);
 	const fields = type.fields.map(f => {
 		return {
 			fieldName: f.fieldName,
@@ -102,7 +103,12 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 		};
 	}
 
-	if (fields.length === 0 && spreads.length === 1) {
+	if (
+		fields.length === 0 &&
+		spreads.length === 1 &&
+		possibleTypes.length === 1 &&
+		possibleTypes[0] === spreads[0].schemaType
+	) {
 		return {
 			fields: mapWithConstantTypeNameValues(spreads[0].fields, spreads[0].schemaType),
 			fragmentSpreads: null,
@@ -112,7 +118,11 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 		};
 	}
 
-	const fieldsToSpreads = possibleTypes.map(t => {
+	const missingTypes = possibleTypes.filter(t => {
+		return spreads.find(s => s.schemaType === t) == null;
+	});
+
+	const fieldsToSpreads = possibleTypes.filter(t => missingTypes.indexOf(t) < 0).map(t => {
 		return {
 			fields: fields,
 			kind: 'SpecificObject',
@@ -121,13 +131,26 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 	});
 
 	const collapsedSpreads = collapseFragmentSpreads(schema, [], spreads.concat(fieldsToSpreads));
+
+	const constantMappedSpreads: T.FlattenedSpreadType[] = collapsedSpreads.map(s => ({
+		fields: mapWithConstantTypeNameValues(s.fields, s.schemaType),
+		kind: 'SpecificObject',
+		schemaType: s.schemaType,
+	} as T.FlattenedSpecificObjectType));
+
+	const restSpread: T.FlattenedSpreadType[] = missingTypes.length > 0 ?
+		[{
+			fields: sortBy(
+				mapWithConstantTypeNameValues(fields, missingTypes),
+				t => t.resultFieldName,
+			),
+			kind: 'RestObject',
+			schemaTypes: missingTypes,
+		}] :
+		[];
 	return {
 		fields: null,
-		fragmentSpreads: collapsedSpreads.map(s => ({
-			fields: mapWithConstantTypeNameValues(s.fields, s.schemaType),
-			kind: 'SpecificObject',
-			schemaType: s.schemaType,
-		} as T.FlattenedSpecificObjectType)),
+		fragmentSpreads: constantMappedSpreads.concat(restSpread),
 		kind: 'Object',
 		objectKind: 'Spread',
 		schemaTypes: possibleTypes,
@@ -169,7 +192,7 @@ function collapseFragmentSpreads(
 		return carry;
 	}, new Map());
 
-	for (const entry of grouped) {
+	for (const entry of Array.from(grouped.entries())) {
 		const type = entry[0];
 		const allFields = ([] as T.FlattenedFieldInfo[]).concat(...entry[1]);
 
@@ -183,14 +206,14 @@ function collapseFragmentSpreads(
 		});
 		if (fields.length > 0) {
 			res.push({
-				fields: fields,
+				fields: sortBy(fields, (f) => f.resultFieldName),
 				kind: 'SpecificObject',
 				schemaType: type,
 			});
 		}
 	}
 
-	return res;
+	return sortBy(res, (s) => s.schemaType.name);
 }
 
 function uniqueBy<T, TUniqueVal>(
@@ -272,8 +295,20 @@ function isSameType(type1: T.FlattenedType, type2: T.FlattenedType): boolean {
 			) {
 				return false;
 			}
-			const t2FragmentSpreadEquals = (spread: T.FlattenedSpecificObjectType) => {
-				const t2Spread = t2.fragmentSpreads.find(v => v.schemaType === spread.schemaType);
+			const t2FragmentSpreadEquals = (spread: T.FlattenedSpreadType) => {
+				const t2Spread = t2.fragmentSpreads.find(v => {
+					if (v.kind !== spread.kind) {
+						return false;
+					}
+					if (spread.kind === 'SpecificObject') {
+						return spread.schemaType === (v as T.FlattenedSpecificObjectType).schemaType;
+					}
+					const st: typeof spread = v as any;
+					if (st.schemaTypes.length !== spread.schemaTypes.length) {
+						return false;
+					}
+					return spread.schemaTypes.every((t, i) => st.schemaTypes[i] === t);
+				});
 				if (t2Spread == null) {
 					return false;
 				}
@@ -303,30 +338,56 @@ function isSameType(type1: T.FlattenedType, type2: T.FlattenedType): boolean {
 		return isSameType(type1.nullableType, (type2 as T.FlattenedNonNullType).nullableType);
 	}
 
+	if (type1.kind === 'Reference') {
+		const t2 = type2 as T.ReferencedType;
+		if (type1.names.length !== t2.names.length) {
+			return false;
+		}
+		return type1.names.every(n => t2.names.indexOf(n) >= 0);
+	}
+
 	return type1.schemaType === (type2 as T.ScalarType).schemaType;
 }
 
 function mapWithConstantTypeNameValues(
 	fields: T.FlattenedFieldInfo[],
-	types: GraphQLObjectType | GraphQLObjectType[]
+	types: GraphQLObjectType | GraphQLObjectType[],
 ): T.FlattenedFieldInfo[] {
 	const possibleTypes = (types instanceof GraphQLObjectType ? [types] : types).map(t => t.name);
+	const SCALAR = 'Scalar';
+	const NONNULL = 'NonNull';
 	return fields.map(f => {
 		if (f.fieldName === '__typename') {
+			const type = (f.type as T.NonNullType);
 			return {
 				fieldName: f.fieldName,
-				kind: 'FieldInfo',
 				resultFieldName: f.resultFieldName,
 				schemaType: f.schemaType,
 				type: {
-					kind: 'NonNull',
+					kind: NONNULL as typeof NONNULL,
 					nullableType: {
-						kind: 'Scalar',
+						kind: SCALAR as typeof SCALAR,
 						knownPossibleValues: possibleTypes,
+						schemaType: type.nullableType.schemaType as GraphQLScalarType,
 					},
-				} as T.FlattenedNonNullType,
+					schemaType: type.schemaType,
+				},
 			};
 		}
 		return f;
+	});
+}
+
+function sortBy<T, TProp>(arr: T[], property: (item: T) => TProp): T[] {
+	return arr.sort((a, b) => {
+		const aProp = property(a);
+		const bProp = property(b);
+
+		if (aProp < bProp) {
+			return -1;
+		} else if (aProp > bProp) {
+			return 1;
+		}
+		return 0;
 	});
 }

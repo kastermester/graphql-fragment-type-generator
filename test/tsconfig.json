@@ -4,19 +4,22 @@
 		"module": "commonjs",
 		"target": "es5",
 		"declaration": false,
-		"noEmit": true,
+		"noEmit": false,
 		"newLine": "LF",
-		"outDir": "lib",
+		"outDir": "../testlib",
 		"noImplicitAny": true,
+		"inlineSourceMap": true,
+		"inlineSources": true,
+		"sourceRoot": "..",
 		"allowJs": false,
-		"baseUrl": "..",
+		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "node",
 		"lib": [
 			"es2015"
 		]
 	},
 	"include": [
-		"../typings/*.d.ts",
+		"../types/*.d.ts",
 		"../src/**/*.ts",
 		"**/*.ts"
 	]
