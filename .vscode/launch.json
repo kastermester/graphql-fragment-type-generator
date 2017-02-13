@@ -5,19 +5,25 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "node",
+			"type": "node2",
 			"request": "launch",
-			"name": "Launch Program",
-			"program": "${workspaceRoot}/lib/index.js",
 			"cwd": "${workspaceRoot}",
-			"sourceMaps": true
-		},
-		{
-			"type": "node",
-			"request": "attach",
-			"name": "Attach to Process",
-			"port": 5858,
-			"outFiles": []
+			"name": "Debug mocha tests",
+			"program": "${workspaceRoot}/node_modules//mocha/bin/_mocha",
+			"args": [
+				"--harmony",
+				"--es-staging",
+				"--inline-diffs",
+				"-c",
+				"--recursive",
+				"test"
+			],
+			"sourceMaps": true,
+			"stopOnEntry": false,
+			"smartStep": true,
+			"runtimeArgs": [
+				"--nolazy"
+			]
 		}
 	]
 }
