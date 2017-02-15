@@ -151,7 +151,7 @@ describe('TypeBrandDecorator', () => {
 									names: ['Planet'],
 								},
 								schemaType: new GraphQLNonNull(GraphQLString),
-							}
+							},
 						},
 						{
 							deprecationReason: null,

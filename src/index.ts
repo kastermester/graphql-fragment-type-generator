@@ -55,7 +55,7 @@ export function getFragmentTextBrandedTypeDefinition(
 		indentSpaces = 0;
 	}
 	const framgnetTypeBrandText = `{
-${' '.repeat(indentSpaces + 2)}'': ${names.fragmentTypeNames.join(' | ')}
+${' '.repeat(indentSpaces + 2)}'': ${names.fragmentTypeNames.join(' | ')};
 }`;
 
 	const typeText = printType(false, brandedAst, indentSpaces);
