@@ -24,6 +24,8 @@ describe('Printer', () => {
 		const type: FlattenedObjectType = {
 			fields: [
 				{
+					deprecationReason: null,
+					description: 'The name of this planet.',
 					fieldName: 'name',
 					resultFieldName: 'name',
 					schemaType: GraphQLString,
@@ -42,6 +44,9 @@ describe('Printer', () => {
 
 		const printed = printType(false, type);
 		const expected = `{
+  /**
+   * The name of this planet.
+   */
   name: string | null;
 }`;
 		assert.deepEqual(printed, expected);
@@ -51,6 +56,8 @@ describe('Printer', () => {
 		const type: FlattenedObjectType = {
 			fields: [
 				{
+					deprecationReason: null,
+					description: 'The name of this planet.',
 					fieldName: 'name',
 					resultFieldName: 'newName',
 					schemaType: GraphQLString,
@@ -68,6 +75,9 @@ describe('Printer', () => {
 		};
 		const printed = printType(false, type);
 		const expected = `{
+  /**
+   * The name of this planet.
+   */
   newName: string | null;
 }`;
 		assert.deepEqual(printed, expected);
@@ -80,6 +90,8 @@ describe('Printer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: 'The name of this planet.',
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -118,6 +130,9 @@ describe('Printer', () => {
 		};
 		const printed = printType(false, type);
 		const expected = `{
+  /**
+   * The name of this planet.
+   */
   name: string | null;
 } | {}`;
 		assert.deepEqual(printed, expected);
@@ -130,6 +145,8 @@ describe('Printer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'birthYear',
 							resultFieldName: 'birthYear',
 							schemaType: GraphQLString,
@@ -140,6 +157,10 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description:
+							'The gender of this person. Either "Male", "Female" or "unknown",\n' +
+							'"n/a" if the person does not have a gender.',
 							fieldName: 'gender',
 							resultFieldName: 'gender',
 							schemaType: GraphQLString,
@@ -156,6 +177,8 @@ describe('Printer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: 'The name of this planet.',
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -194,8 +217,16 @@ describe('Printer', () => {
 		const printed = printType(false, type);
 		const expected = `{
   birthYear: string | null;
+
+  /**
+   * The gender of this person. Either "Male", "Female" or "unknown",
+   * "n/a" if the person does not have a gender.
+   */
   gender: string | null;
 } | {
+  /**
+   * The name of this planet.
+   */
   name: string | null;
 } | {}`;
 		assert.deepEqual(printed, expected);
@@ -208,6 +239,8 @@ describe('Printer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '__typename',
 							resultFieldName: '__typename',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -222,6 +255,8 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'birthYear',
 							resultFieldName: 'birthYear',
 							schemaType: GraphQLString,
@@ -232,6 +267,8 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'gender',
 							resultFieldName: 'gender',
 							schemaType: GraphQLString,
@@ -242,6 +279,8 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'id',
 							resultFieldName: 'id',
 							schemaType: new GraphQLNonNull(GraphQLID),
@@ -262,6 +301,8 @@ describe('Printer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '__typename',
 							resultFieldName: '__typename',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -276,6 +317,8 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: 'Test deprecation reason no description',
+							description: null,
 							fieldName: 'id',
 							resultFieldName: 'id',
 							schemaType: new GraphQLNonNull(GraphQLID),
@@ -290,6 +333,8 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: 'Test deprecation reason',
+							description: 'The name of the planet.',
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -306,6 +351,8 @@ describe('Printer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '__typename',
 							resultFieldName: '__typename',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -320,6 +367,8 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'id',
 							resultFieldName: 'id',
 							schemaType: new GraphQLNonNull(GraphQLID),
@@ -358,27 +407,41 @@ describe('Printer', () => {
 		const printed = printType(false, normalized);
 		const expected = `{
   __typename: "Person";
+
   birthYear: string | null;
+
   gender: string | null;
+
   id: string;
 } | {
   __typename: "Planet";
+
+  /**
+   * @deprecated Test deprecation reason no description
+   */
   id: string;
+
+  /**
+   * The name of the planet.
+   * @deprecated Test deprecation reason
+   */
   name: string | null;
 } | {
   __typename: "Film" | "Species" | "Starship" | "Vehicle";
+
   id: string;
 }`;
 		assert.equal(printed, expected);
 	});
 	it('Can print branded types', () => {
-
 		const type: FlattenedObjectType = {
 			fields: null,
 			fragmentSpreads: [
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '',
 							resultFieldName: '',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -392,6 +455,8 @@ describe('Printer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -408,6 +473,8 @@ describe('Printer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '',
 							resultFieldName: '',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -446,6 +513,7 @@ describe('Printer', () => {
 		const printed = printType(false, type);
 		const expected = `{
   '': Planet;
+
   name: string | null;
 } | {
   '': Film | Species | Person | Starship | Vehicle;

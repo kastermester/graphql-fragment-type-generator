@@ -24,6 +24,41 @@ function intersectPossibleTypes(
 	return innerPossibleTypes.filter(t => outerPossibleTypes.indexOf(t) >= 0);
 }
 
+function withMeta(
+	fields: T.FlattenedFieldInfo[],
+	sourceType: GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType,
+): T.FlattenedFieldInfoWithMeta[] {
+	if (sourceType instanceof GraphQLUnionType) {
+		return fields.map((f) => {
+			return {
+				...f,
+				deprecationReason: null,
+				description: null,
+			};
+		});
+	}
+	const sourceFields = sourceType.getFields();
+	return fields.map((f) => {
+		let description: string | null = null;
+		let deprecationReason: string | null = null;
+		if (f.fieldName === '__typename') {
+			description = null;
+		} else {
+			const info = sourceFields[f.fieldName];
+			if (info == null) {
+				throw new Error('Could not find field info for field ' + f.fieldName + ' on type ' + sourceType.name);
+			}
+			description = info.description || null;
+			deprecationReason = info.deprecationReason || null;
+		}
+		return {
+			...f,
+			deprecationReason: deprecationReason,
+			description: description,
+		};
+	});
+}
+
 function flattenFragmentSpread(
 	schema: GraphQLSchema,
 	type: T.ObjectType,
@@ -49,7 +84,7 @@ function flattenFragmentSpread(
 			}));
 			for (const t of possibleInnerSpreadTypes) {
 				carry.push({
-					fields: mapWithConstantTypeNameValues(fields, t),
+					fields: withMeta(mapWithConstantTypeNameValues(fields, t), t),
 					kind: 'SpecificObject',
 					schemaType: t,
 				});
@@ -64,7 +99,7 @@ function flattenFragmentSpread(
 		}));
 		for (const t of possibleSpreadTypes) {
 			carry.push({
-				fields: fields,
+				fields: withMeta(fields, t),
 				kind: 'SpecificObject',
 				schemaType: t,
 			});
@@ -95,7 +130,7 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 
 	if (spreads.length === 0) {
 		return {
-			fields: mapWithConstantTypeNameValues(fields, possibleTypes),
+			fields: withMeta(mapWithConstantTypeNameValues(fields, possibleTypes), type.schemaType),
 			fragmentSpreads: null,
 			kind: 'Object',
 			objectKind: 'Single',
@@ -110,7 +145,7 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 		possibleTypes[0] === spreads[0].schemaType
 	) {
 		return {
-			fields: mapWithConstantTypeNameValues(spreads[0].fields, spreads[0].schemaType),
+			fields: withMeta(mapWithConstantTypeNameValues(spreads[0].fields, spreads[0].schemaType), spreads[0].schemaType),
 			fragmentSpreads: null,
 			kind: 'Object',
 			objectKind: 'Single',
@@ -124,25 +159,28 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 
 	const fieldsToSpreads = possibleTypes.filter(t => missingTypes.indexOf(t) < 0).map(t => {
 		return {
-			fields: fields,
-			kind: 'SpecificObject',
+			fields: withMeta(fields, t),
+			kind: 'SpecificObject' as 'SpecificObject',
 			schemaType: t,
-		} as T.FlattenedSpecificObjectType;
+		};
 	});
 
 	const collapsedSpreads = collapseFragmentSpreads(schema, [], spreads.concat(fieldsToSpreads));
 
 	const constantMappedSpreads: T.FlattenedSpreadType[] = collapsedSpreads.map(s => ({
-		fields: mapWithConstantTypeNameValues(s.fields, s.schemaType),
-		kind: 'SpecificObject',
+		fields: withMeta(mapWithConstantTypeNameValues(s.fields, s.schemaType), s.schemaType),
+		kind: 'SpecificObject' as 'SpecificObject',
 		schemaType: s.schemaType,
-	} as T.FlattenedSpecificObjectType));
+	}));
 
 	const restSpread: T.FlattenedSpreadType[] = missingTypes.length > 0 ?
 		[{
-			fields: sortBy(
-				mapWithConstantTypeNameValues(fields, missingTypes),
-				t => t.resultFieldName,
+			fields: withMeta(
+				sortBy(
+					mapWithConstantTypeNameValues(fields, missingTypes),
+					t => t.resultFieldName,
+				),
+				type.schemaType,
 			),
 			kind: 'RestObject',
 			schemaTypes: missingTypes,
@@ -206,7 +244,7 @@ function collapseFragmentSpreads(
 		});
 		if (fields.length > 0) {
 			res.push({
-				fields: sortBy(fields, (f) => f.resultFieldName),
+				fields: withMeta(sortBy(fields, (f) => f.resultFieldName), type),
 				kind: 'SpecificObject',
 				schemaType: type,
 			});

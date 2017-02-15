@@ -187,15 +187,33 @@ export function printType(
 		}
 		case 'Object': {
 			const nullableWrapper = nullable ? ' | null' : '';
-			const printFields = (fields: T.FlattenedFieldInfo[], i: number) => {
+			const printFields = (fields: T.FlattenedFieldInfoWithMeta[], i: number) => {
 				if (fields.length === 0) {
 					return '{}';
 				}
 				const indents = ' '.repeat(i);
 				const buffer: string[] = [`{`];
-				fields.forEach(f => {
+				const sanitizeComment = (lineStart: string, comment: string): string => {
+					return lineStart + comment.replace(/\n/g, `\n${lineStart}`).replace(/\*\//g, '* /');
+				};
+				fields.forEach((f, idx) => {
 					const fieldName = f.resultFieldName === '' ? `''` : f.resultFieldName;
+					if (f.deprecationReason != null || f.description != null) {
+						buffer.push(`${indents}  /**`);
+						const lineStart = `${indents}   * `;
+
+						if (f.description != null) {
+							buffer.push(sanitizeComment(lineStart, f.description));
+						}
+						if (f.deprecationReason != null) {
+							buffer.push(sanitizeComment(lineStart, `@deprecated ${f.deprecationReason}`));
+						}
+						buffer.push(`${indents}   */`);
+					}
 					buffer.push(`${indents + '  '}${fieldName}: ${printType(true, f.type, i + 4)};`);
+					if (idx < fields.length - 1) {
+						buffer.push('');
+					}
 				});
 				buffer.push(`${indents}}`);
 				return buffer.join('\n');

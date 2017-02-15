@@ -44,6 +44,8 @@ describe('TypeNormalizer', () => {
 		const expected: typeof normalized = {
 			fields: [
 				{
+					deprecationReason: null,
+					description: 'The name of this planet.',
 					fieldName: 'name',
 					resultFieldName: 'name',
 					schemaType: GraphQLString,
@@ -86,6 +88,8 @@ describe('TypeNormalizer', () => {
 		const expected: typeof normalized = {
 			fields: [
 				{
+					deprecationReason: null,
+					description: 'The name of this planet.',
 					fieldName: 'name',
 					resultFieldName: 'newName',
 					schemaType: GraphQLString,
@@ -138,6 +142,8 @@ describe('TypeNormalizer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: 'The name of this planet.',
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -238,6 +244,11 @@ describe('TypeNormalizer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description:
+							'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
+							'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
+							'episode IV: A New Hope.',
 							fieldName: 'birthYear',
 							resultFieldName: 'birthYear',
 							schemaType: GraphQLString,
@@ -248,6 +259,10 @@ describe('TypeNormalizer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description:
+							'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
+							'if the person does not have a gender.',
 							fieldName: 'gender',
 							resultFieldName: 'gender',
 							schemaType: GraphQLString,
@@ -264,6 +279,8 @@ describe('TypeNormalizer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: 'The name of this planet.',
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -392,6 +409,8 @@ describe('TypeNormalizer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '__typename',
 							resultFieldName: '__typename',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -406,6 +425,11 @@ describe('TypeNormalizer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description:
+							'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
+							'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
+							'episode IV: A New Hope.',
 							fieldName: 'birthYear',
 							resultFieldName: 'birthYear',
 							schemaType: GraphQLString,
@@ -416,6 +440,10 @@ describe('TypeNormalizer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description:
+							'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
+							'if the person does not have a gender.',
 							fieldName: 'gender',
 							resultFieldName: 'gender',
 							schemaType: GraphQLString,
@@ -426,6 +454,8 @@ describe('TypeNormalizer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: 'The ID of an object',
 							fieldName: 'id',
 							resultFieldName: 'id',
 							schemaType: new GraphQLNonNull(GraphQLID),
@@ -446,6 +476,8 @@ describe('TypeNormalizer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '__typename',
 							resultFieldName: '__typename',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -460,6 +492,8 @@ describe('TypeNormalizer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: 'The ID of an object',
 							fieldName: 'id',
 							resultFieldName: 'id',
 							schemaType: new GraphQLNonNull(GraphQLID),
@@ -474,6 +508,8 @@ describe('TypeNormalizer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: 'The name of this planet.',
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -490,6 +526,8 @@ describe('TypeNormalizer', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '__typename',
 							resultFieldName: '__typename',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -504,6 +542,8 @@ describe('TypeNormalizer', () => {
 							},
 						},
 						{
+							deprecationReason: null,
+							description: 'The id of the object.',
 							fieldName: 'id',
 							resultFieldName: 'id',
 							schemaType: new GraphQLNonNull(GraphQLID),

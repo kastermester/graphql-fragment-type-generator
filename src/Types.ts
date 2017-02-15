@@ -27,6 +27,11 @@ export interface FlattenedFieldInfo {
 	type: FlattenedType;
 }
 
+export interface FlattenedFieldInfoWithMeta extends FlattenedFieldInfo {
+	description: string | null;
+	deprecationReason: string | null;
+}
+
 export interface ObjectType {
 	kind: 'Object';
 	fields: FieldInfo[];
@@ -36,13 +41,13 @@ export interface ObjectType {
 
 export interface FlattenedSpecificObjectType {
 	kind: 'SpecificObject';
-	fields: FlattenedFieldInfo[];
+	fields: FlattenedFieldInfoWithMeta[];
 	schemaType: GraphQLObjectType;
 }
 
 export interface FlattenedRestObjectType {
 	kind: 'RestObject';
-	fields: FlattenedFieldInfo[];
+	fields: FlattenedFieldInfoWithMeta[];
 	schemaTypes: GraphQLObjectType[];
 }
 
@@ -51,7 +56,7 @@ export type FlattenedSpreadType = FlattenedSpecificObjectType | FlattenedRestObj
 export interface FlattenedSingleOjectType {
 	kind: 'Object';
 	objectKind: 'Single';
-	fields: FlattenedFieldInfo[];
+	fields: FlattenedFieldInfoWithMeta[];
 	schemaTypes: GraphQLObjectType[];
 	fragmentSpreads: null;
 }

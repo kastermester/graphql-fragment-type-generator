@@ -21,11 +21,13 @@ export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.Flattened
 }
 
 function decorateFieldsWithTypeBrands(
-	fields: T.FlattenedFieldInfo[],
+	fields: T.FlattenedFieldInfoWithMeta[],
 	types: GraphQLObjectType[],
-): T.FlattenedFieldInfo[] {
+): T.FlattenedFieldInfoWithMeta[] {
 	return [
 		{
+			deprecationReason: null,
+			description: null,
 			fieldName: '',
 			resultFieldName: '',
 			schemaType: new GraphQLNonNull(GraphQLString),

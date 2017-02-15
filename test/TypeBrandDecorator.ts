@@ -24,6 +24,8 @@ describe('TypeBrandDecorator', () => {
 		const type: FlattenedObjectType = {
 			fields: [
 				{
+					deprecationReason: null,
+					description: null,
 					fieldName: 'name',
 					resultFieldName: 'name',
 					schemaType: GraphQLString,
@@ -44,6 +46,8 @@ describe('TypeBrandDecorator', () => {
 		const expected: typeof type = {
 			fields: [
 				{
+					deprecationReason: null,
+					description: null,
 					fieldName: '',
 					resultFieldName: '',
 					schemaType: new GraphQLNonNull(GraphQLString),
@@ -57,6 +61,8 @@ describe('TypeBrandDecorator', () => {
 					},
 				},
 				{
+					deprecationReason: null,
+					description: null,
 					fieldName: 'name',
 					resultFieldName: 'name',
 					schemaType: GraphQLString,
@@ -88,6 +94,8 @@ describe('TypeBrandDecorator', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -131,6 +139,8 @@ describe('TypeBrandDecorator', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '',
 							resultFieldName: '',
 							schemaType: new GraphQLNonNull(GraphQLString),
@@ -144,6 +154,8 @@ describe('TypeBrandDecorator', () => {
 							}
 						},
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,
@@ -160,6 +172,8 @@ describe('TypeBrandDecorator', () => {
 				{
 					fields: [
 						{
+							deprecationReason: null,
+							description: null,
 							fieldName: '',
 							resultFieldName: '',
 							schemaType: new GraphQLNonNull(GraphQLString),
