@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 import * as T from './Types';
 
 export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.FlattenedObjectType {
@@ -28,10 +28,14 @@ function decorateFieldsWithTypeBrands(
 		{
 			fieldName: '',
 			resultFieldName: '',
-			schemaType: GraphQLString,
+			schemaType: new GraphQLNonNull(GraphQLString),
 			type: {
-				kind: 'Reference',
-				names: types.map(e => e.name),
+				kind: 'NonNull',
+				nullableType: {
+					kind: 'Reference',
+					names: types.map(e => e.name),
+				},
+				schemaType: new GraphQLNonNull(GraphQLString),
 			},
 		},
 		...fields.map((f) => {

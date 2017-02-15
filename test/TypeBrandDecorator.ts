@@ -46,10 +46,14 @@ describe('TypeBrandDecorator', () => {
 				{
 					fieldName: '',
 					resultFieldName: '',
-					schemaType: GraphQLString,
+					schemaType: new GraphQLNonNull(GraphQLString),
 					type: {
-						kind: 'Reference',
-						names: ['Planet'],
+						kind: 'NonNull',
+						nullableType: {
+							kind: 'Reference',
+							names: ['Planet'],
+						},
+						schemaType: new GraphQLNonNull(GraphQLString),
 					},
 				},
 				{
@@ -129,11 +133,15 @@ describe('TypeBrandDecorator', () => {
 						{
 							fieldName: '',
 							resultFieldName: '',
-							schemaType: GraphQLString,
+							schemaType: new GraphQLNonNull(GraphQLString),
 							type: {
-								kind: 'Reference',
-								names: ['Planet'],
-							},
+								kind: 'NonNull',
+								nullableType: {
+									kind: 'Reference',
+									names: ['Planet'],
+								},
+								schemaType: new GraphQLNonNull(GraphQLString),
+							}
 						},
 						{
 							fieldName: 'name',
@@ -154,10 +162,14 @@ describe('TypeBrandDecorator', () => {
 						{
 							fieldName: '',
 							resultFieldName: '',
-							schemaType: GraphQLString,
+							schemaType: new GraphQLNonNull(GraphQLString),
 							type: {
-								kind: 'Reference',
-								names: ['Film', 'Species', 'Person', 'Starship', 'Vehicle'],
+								kind: 'NonNull',
+								nullableType: {
+									kind: 'Reference',
+									names: ['Film', 'Species', 'Person', 'Starship', 'Vehicle'],
+								},
+								schemaType: new GraphQLNonNull(GraphQLString),
 							},
 						},
 					],

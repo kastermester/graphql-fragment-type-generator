@@ -371,4 +371,85 @@ describe('Printer', () => {
 }`;
 		assert.equal(printed, expected);
 	});
+	it('Can print branded types', () => {
+
+		const type: FlattenedObjectType = {
+			fields: null,
+			fragmentSpreads: [
+				{
+					fields: [
+						{
+							fieldName: '',
+							resultFieldName: '',
+							schemaType: new GraphQLNonNull(GraphQLString),
+							type: {
+								kind: 'NonNull',
+								nullableType: {
+									kind: 'Reference',
+									names: ['Planet'],
+								},
+								schemaType: new GraphQLNonNull(GraphQLString),
+							},
+						},
+						{
+							fieldName: 'name',
+							resultFieldName: 'name',
+							schemaType: GraphQLString,
+							type: {
+								kind: 'Scalar',
+								knownPossibleValues: null,
+								schemaType: GraphQLString,
+							},
+						},
+					],
+					kind: 'SpecificObject',
+					schemaType: schema.getType('Planet') as GraphQLObjectType,
+				},
+				{
+					fields: [
+						{
+							fieldName: '',
+							resultFieldName: '',
+							schemaType: new GraphQLNonNull(GraphQLString),
+							type: {
+								kind: 'NonNull',
+								nullableType: {
+									kind: 'Reference',
+									names: ['Film', 'Species', 'Person', 'Starship', 'Vehicle'],
+								},
+								schemaType: new GraphQLNonNull(GraphQLString),
+							},
+						},
+					],
+					kind: 'RestObject',
+					schemaTypes: [
+						schema.getType('Film') as GraphQLObjectType,
+						schema.getType('Species') as GraphQLObjectType,
+						schema.getType('Person') as GraphQLObjectType,
+						schema.getType('Starship') as GraphQLObjectType,
+						schema.getType('Vehicle') as GraphQLObjectType,
+					],
+				},
+			],
+			kind: 'Object',
+			objectKind: 'Spread',
+			schemaTypes: [
+				schema.getType('Film') as GraphQLObjectType,
+				schema.getType('Species') as GraphQLObjectType,
+				schema.getType('Planet') as GraphQLObjectType,
+				schema.getType('Person') as GraphQLObjectType,
+				schema.getType('Starship') as GraphQLObjectType,
+				schema.getType('Vehicle') as GraphQLObjectType,
+			],
+		};
+
+		const printed = printType(false, type);
+		const expected = `{
+  '': Planet;
+  name: string | null;
+} | {
+  '': Film | Species | Person | Starship | Vehicle;
+}`;
+		assert.equal(printed, expected);
+	});
 });
