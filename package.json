@@ -2,7 +2,7 @@
   "name": "graphql-fragment-type-generator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "mocha --harmony --es-staging --no-colors --recursive test",
     "lint": "tslint --project tsconfig.json src/*.ts src/**/*.ts test/*.ts test/**/*.ts",
@@ -12,7 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aggregate-error": "^1.0.0",
+    "aggregate-error": "^1.0.0"
+  },
+  "peerDependencies": {
     "graphql": "^0.9.1"
   },
   "devDependencies": {
@@ -21,6 +23,7 @@
     "@types/mocha": "^2.2.39",
     "@types/node": "^7.0.5",
     "chai": "^3.5.0",
+    "graphql": "^0.9.1",
     "mocha": "^3.2.0",
     "ts-node": "^2.1.0",
     "tslint": "^4.4.2",
