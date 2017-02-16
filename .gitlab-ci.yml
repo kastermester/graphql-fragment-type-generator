@@ -14,7 +14,8 @@ yarn:install:
   script:
     - yarn install --ignore-scripts
   artifacts:
-    - node_modules/
+    paths:
+      - node_modules/
 
 test:
   stage: verify
