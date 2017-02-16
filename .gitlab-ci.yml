@@ -13,7 +13,7 @@ prepare:
       - node_modules/
   stage: prepare
   script:
-    - yarn install --no-scripts
+    - yarn install --ignore-scripts
 
 test:
   stage: verify
