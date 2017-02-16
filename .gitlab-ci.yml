@@ -1,26 +1,41 @@
 ---
-image: docker.input-output.dk/docker/alpine-base:v1.1.2
+image: docker.input-output.dk/docker/alpine-base:v1.2.0
 
 stages:
   - prepare
   - verify
   - build
 
-prepare:
+yarn:install:
   cache:
-    key: ${CI_BUILD_REF_NAME}
     paths:
       - node_modules/
   stage: prepare
   script:
     - yarn install --ignore-scripts
+  artifacts:
+    - node_modules/
 
 test:
   stage: verify
+  dependencies:
+    - yarn:install
   script:
     - yarn test
 
+lint:
+  stage: verify
+  dependencies:
+    - yarn:install
+  script:
+    - yarn lint
+
 build:
   stage: build
+  dependencies:
+    - yarn:install
   script:
     - yarn build
+  artifacts:
+    paths:
+      - lib/
