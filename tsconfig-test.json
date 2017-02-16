@@ -1,26 +1,28 @@
 {
 	"compilerOptions": {
-		"strictNullChecks": true,
-		"module": "commonjs",
-		"target": "es5",
-		"declaration": false,
-		"noEmit": false,
-		"newLine": "LF",
-		"outDir": "../testlib",
 		"noImplicitAny": true,
 		"inlineSourceMap": true,
 		"inlineSources": true,
-		"sourceRoot": "..",
+		"strictNullChecks": true,
+		"sourceMap": false,
+		"module": "commonjs",
+		"target": "es5",
+		"declaration": true,
+		"noEmit": false,
+		"newLine": "LF",
+		"outDir": "lib",
 		"allowJs": false,
+		"baseUrl": "src",
 		"forceConsistentCasingInFileNames": true,
 		"moduleResolution": "node",
 		"lib": [
-			"es2015"
+			"es2015",
+			"es2016",
+			"es2017"
 		]
 	},
 	"include": [
-		"../types/*.d.ts",
-		"../src/**/*.ts",
-		"**/*.ts"
+		"types/*.d.ts",
+		"src/**/*.ts"
 	]
 }

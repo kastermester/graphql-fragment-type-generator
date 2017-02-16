@@ -8,16 +8,17 @@
 			"type": "node2",
 			"request": "launch",
 			"cwd": "${workspaceRoot}",
-			"name": "Debug mocha tests",
-			"program": "${workspaceRoot}/node_modules//mocha/bin/_mocha",
+			"name": "Debug jest tests",
+			"program": "${workspaceRoot}/node_modules/jest-cli/bin/jest.js",
 			"args": [
-				"--harmony",
-				"--es-staging",
-				"--inline-diffs",
-				"-c",
-				"--recursive",
-				"test"
+				"--runInBand",
+				"--no-cache",
+				"--env",
+				"jest-environment-node-debug"
 			],
+			"env": {
+				"NODE_ENV": "development"
+			},
 			"sourceMaps": true,
 			"stopOnEntry": false,
 			"smartStep": true,

@@ -6,6 +6,7 @@ import {
 	GraphQLUnionType,
 } from 'graphql';
 import * as T from './Types';
+import { groupBy, sortBy, uniqueBy } from './utils';
 
 type StackType = GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType;
 
@@ -24,7 +25,7 @@ function intersectPossibleTypes(
 	return innerPossibleTypes.filter(t => outerPossibleTypes.indexOf(t) >= 0);
 }
 
-function withMeta(
+export function withMeta(
 	fields: T.FlattenedFieldInfo[],
 	sourceType: GraphQLObjectType | GraphQLInterfaceType | GraphQLUnionType,
 ): T.FlattenedFieldInfoWithMeta[] {
@@ -41,7 +42,7 @@ function withMeta(
 	return fields.map((f) => {
 		let description: string | null = null;
 		let deprecationReason: string | null = null;
-		if (f.fieldName === '__typename') {
+		if (f.fieldName === '__typename' || f.fieldName === '') {
 			description = null;
 		} else {
 			const info = sourceFields[f.fieldName];
@@ -254,43 +255,6 @@ function collapseFragmentSpreads(
 	return sortBy(res, (s) => s.schemaType.name);
 }
 
-function uniqueBy<T, TUniqueVal>(
-	arr: T[],
-	uniqueKeySelector: (item: T) => TUniqueVal,
-): T[] {
-	const uniqueValues = new Set();
-	const res: T[] = [];
-
-	arr.forEach((v) => {
-		const key = uniqueKeySelector(v);
-		if (uniqueValues.has(key)) {
-			return;
-		}
-		uniqueValues.add(key);
-		res.push(v);
-	});
-
-	return res;
-}
-
-function groupBy<T, TKey, TValue>(
-	arr: T[],
-	keySelector: (item: T) => TKey,
-	valueSelector: (item: T) => TValue): Map<TKey, TValue[]> {
-	const res = new Map();
-
-	arr.forEach((v) => {
-		const key = keySelector(v);
-		let entry = res.get(key);
-		if (entry == null) {
-			entry = [];
-			res.set(key, entry);
-		}
-		entry.push(valueSelector(v));
-	});
-	return res;
-}
-
 function isSameType(type1: T.FlattenedType, type2: T.FlattenedType): boolean {
 	if (type1.kind !== type2.kind) {
 		return false;
@@ -387,13 +351,14 @@ function isSameType(type1: T.FlattenedType, type2: T.FlattenedType): boolean {
 	return type1.schemaType === (type2 as T.ScalarType).schemaType;
 }
 
-function mapWithConstantTypeNameValues(
+export function mapWithConstantTypeNameValues(
 	fields: T.FlattenedFieldInfo[],
 	types: GraphQLObjectType | GraphQLObjectType[],
 ): T.FlattenedFieldInfo[] {
 	const possibleTypes = (types instanceof GraphQLObjectType ? [types] : types).map(t => t.name);
 	const SCALAR = 'Scalar';
 	const NONNULL = 'NonNull';
+	const REFERENCE = 'Reference';
 	return fields.map(f => {
 		if (f.fieldName === '__typename') {
 			const type = (f.type as T.NonNullType);
@@ -413,19 +378,5 @@ function mapWithConstantTypeNameValues(
 			};
 		}
 		return f;
-	});
-}
-
-function sortBy<T, TProp>(arr: T[], property: (item: T) => TProp): T[] {
-	return arr.sort((a, b) => {
-		const aProp = property(a);
-		const bProp = property(b);
-
-		if (aProp < bProp) {
-			return -1;
-		} else if (aProp > bProp) {
-			return 1;
-		}
-		return 0;
 	});
 }
