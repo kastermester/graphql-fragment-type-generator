@@ -1,5 +1,5 @@
 ---
-image: docker.input-output.dk/docker/alpine-base:v1.2.0
+image: docker.input-output.dk/docker/nodejs:7.5.0
 
 stages:
   - prepare
@@ -19,8 +19,19 @@ yarn:install:
     paths:
       - node_modules/
 
-test:
+test:nodejs:7.5.0:
   stage: verify
+  image: docker.input-output.dk/docker/nodejs:7.5.0
+  dependencies:
+    - yarn:install
+  script:
+    - yarn test
+  tags:
+    - kubernetes
+    
+test:nodejs:6.9.5:
+  stage: verify
+  image: docker.input-output.dk/docker/nodejs:6.9.5
   dependencies:
     - yarn:install
   script:
