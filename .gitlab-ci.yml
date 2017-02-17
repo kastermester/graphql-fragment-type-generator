@@ -13,6 +13,8 @@ yarn:install:
   stage: prepare
   script:
     - yarn install --ignore-scripts
+  tags:
+    - kubernetes
   artifacts:
     paths:
       - node_modules/
@@ -23,6 +25,8 @@ test:
     - yarn:install
   script:
     - yarn test
+  tags:
+    - kubernetes
 
 lint:
   stage: verify
@@ -30,6 +34,8 @@ lint:
     - yarn:install
   script:
     - yarn lint
+  tags:
+    - kubernetes
 
 build:
   stage: build
@@ -40,3 +46,5 @@ build:
   artifacts:
     paths:
       - lib/
+  tags:
+    - kubernetes
