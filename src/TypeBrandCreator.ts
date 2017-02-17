@@ -19,7 +19,8 @@ export function getTypeBrands(schema: GraphQLSchema): string {
 	const mutationType = schema.getMutationType();
 	const subscriptionType = schema.getSubscriptionType();
 
-	for (const type of Object.values(types)) {
+	for (const typeName of Object.keys(types)) {
+		const type = types[typeName];
 		if (type instanceof GraphQLObjectType) {
 			if (
 				type === rootType ||

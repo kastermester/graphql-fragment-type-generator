@@ -25,7 +25,8 @@ export function getInputObjectTypes(schema: GraphQLSchema): string {
 	const types: TypeMap = schema.getTypeMap() as any;
 	const rootType = schema.getQueryType();
 
-	for (const type of Object.values(types)) {
+	for (const typeName of Object.keys(types)) {
+		const type = types[typeName];
 		if (type instanceof GraphQLInputObjectType) {
 			if (type.name.startsWith('__')) {
 				continue;
