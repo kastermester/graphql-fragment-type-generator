@@ -5,6 +5,7 @@ stages:
   - prepare
   - verify
   - build
+  - publish:pages
 
 yarn:install:
   cache:
@@ -69,3 +70,18 @@ build:
       - lib/
   tags:
     - kubernetes
+
+pages:
+  cache:
+    paths:
+      - docs/node_modules
+  stage: publish:pages
+  script:
+    - cd docs
+    - yarn install
+    - yarn build
+    - mv public ../public
+    - cd ..
+  artifacts:
+    paths:
+      - public/
