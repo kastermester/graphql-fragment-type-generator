@@ -2,17 +2,17 @@
     import React from 'react'
     const rootRoute = { childRoutes: [{childRoutes: [
       {
-        path:'/Users/khs/www/test-site/pages',
+        path:'/Users/khs/www/graphql-fragment-type-generator/docs/pages',
         getComponent (nextState, cb) {
           require.ensure([], (require) => {
-            let Component = require('/Users/khs/www/test-site/pages/index.js')
+            let Component = require('/Users/khs/www/graphql-fragment-type-generator/docs/pages/index.js')
             if (Component.default) {
               Component = Component.default
             }
             require.ensure([], (require) => {
-              const data = require('./json/users-khs-www-test-site-pages.json')
+              const data = require('./json/users-khs-www-graphql-fragment-type-generator-docs-pages.json')
               cb(null, () => <Component {...nextState} {...data} />)
-            }, 'path---users-khs-www-test-site-pages')
+            }, 'path---users-khs-www-graphql-fragment-type-generator-docs-pages')
           }, 'page-component---pages-index-js')
         }
       },
@@ -21,7 +21,7 @@
         path:'/',
         getComponent (nextState, cb) {
           require.ensure([], (require) => {
-            let Component = require('/Users/khs/www/test-site/pages/index.js')
+            let Component = require('/Users/khs/www/graphql-fragment-type-generator/docs/pages/index.js')
             if (Component.default) {
               Component = Component.default
             }

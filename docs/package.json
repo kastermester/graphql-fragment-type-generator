@@ -28,6 +28,7 @@
     "typography-theme-sutro": "^0.15.0"
   },
   "scripts": {
-    "build": "gatsby build"
+    "build": "gatsby build",
+    "start": "gatsby develop"
   }
 }

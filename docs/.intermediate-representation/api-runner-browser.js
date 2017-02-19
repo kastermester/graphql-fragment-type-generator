@@ -1,5 +1,5 @@
 var plugins = [{
-      plugin: require('/Users/khs/www/test-site/gatsby-browser.js'),
+      plugin: require('/Users/khs/www/graphql-fragment-type-generator/docs/gatsby-browser.js'),
       options: {"plugins":[]},
     }]
 'use strict';

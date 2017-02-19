@@ -1,0 +1,10 @@
+{
+    "data": {
+        "page": {
+            "html": "<h1>Test page</h1>\n<p>Hejsa lol</p>"
+        }
+    },
+    "pathContext": {
+        "pageId": "/Users/khs/www/graphql-fragment-type-generator/docs/pages/index.md >> MarkdownRemark"
+    }
+}

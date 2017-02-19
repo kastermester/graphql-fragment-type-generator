@@ -21,19 +21,19 @@
       };
     }
 
-    class ComponentUsersKhsWwwTestSitePages extends React.Component {
+    class ComponentUsersKhsWwwGraphqlFragmentTypeGeneratorDocsPages extends React.Component {
           render () {
-            let Component = require('/Users/khs/www/test-site/pages/index.js')
+            let Component = require('/Users/khs/www/graphql-fragment-type-generator/docs/pages/index.js')
             if (Component.default) {
               Component = Component.default
             }
-            const data = require('./json/users-khs-www-test-site-pages.json')
+            const data = require('./json/users-khs-www-graphql-fragment-type-generator-docs-pages.json')
             return <Component {...this.props} {...data} />
           }
         }
 class ComponentIndex extends React.Component {
           render () {
-            let Component = require('/Users/khs/www/test-site/pages/index.js')
+            let Component = require('/Users/khs/www/graphql-fragment-type-generator/docs/pages/index.js')
             if (Component.default) {
               Component = Component.default
             }
@@ -43,8 +43,8 @@ class ComponentIndex extends React.Component {
         }
     const rootRoute = { childRoutes: [{childRoutes: [
       {
-        path:'/Users/khs/www/test-site/pages',
-        component: ComponentUsersKhsWwwTestSitePages,
+        path:'/Users/khs/www/graphql-fragment-type-generator/docs/pages',
+        component: ComponentUsersKhsWwwGraphqlFragmentTypeGeneratorDocsPages,
       },
     
       {
