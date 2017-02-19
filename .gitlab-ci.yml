@@ -82,6 +82,8 @@ pages:
     - yarn build
     - mv public ../public
     - cd ..
+  tags:
+    - kubernetes
   artifacts:
     paths:
       - public/
