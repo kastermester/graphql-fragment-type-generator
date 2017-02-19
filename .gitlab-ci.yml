@@ -5,7 +5,7 @@ stages:
   - prepare
   - verify
   - build
-  - publish:pages
+  - deploy
 
 yarn:install:
   cache:
@@ -76,7 +76,7 @@ pages:
   cache:
     paths:
       - docs/node_modules
-  stage: publish:pages
+  stage: deploy
   script:
     - mkdir public/
     - echo "<html><head><title>graphql-fragment-type-generator</title></head><body><h1>Comming soon</h1></body></html>" > public/index.html
