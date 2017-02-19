@@ -72,6 +72,7 @@ build:
     - kubernetes
 
 pages:
+  image: docker.input-output.dk/docker/alpine-base:v1.2.0
   cache:
     paths:
       - docs/node_modules
