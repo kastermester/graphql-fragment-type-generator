@@ -72,17 +72,14 @@ build:
     - kubernetes
 
 pages:
-  image: docker.input-output.dk/docker/alpine-base:v1.2.0
+  image: docker.input-output.dk/docker/nodejs:7.5.0
   cache:
     paths:
       - docs/node_modules
   stage: publish:pages
   script:
-    - cd docs
-    - yarn install
-    - yarn build
-    - mv public ../public
-    - cd ..
+    - mkdir public/
+    - echo "<html><head><title>graphql-fragment-type-generator</title></head><body><h1>Comming soon</h1></body></html>" > public/index.html
   tags:
     - kubernetes
   only:
