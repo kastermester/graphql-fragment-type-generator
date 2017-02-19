@@ -85,6 +85,8 @@ pages:
     - cd ..
   tags:
     - kubernetes
+  only:
+    - master
   artifacts:
     paths:
       - public/
