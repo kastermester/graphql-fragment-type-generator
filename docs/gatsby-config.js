@@ -18,12 +18,9 @@ module.exports = {
 				path: `${__dirname}/data`,
 			},
 		},
-		`gatsby-plugin-sharp`,
-		`gatsby-parser-sharp`,
 		`gatsby-parser-json`,
 		`gatsby-parser-remark`,
 		`gatsby-typegen-filesystem`,
-		`gatsby-typegen-sharp`,
 		{
 			resolve: `gatsby-typegen-remark`,
 			options: {
