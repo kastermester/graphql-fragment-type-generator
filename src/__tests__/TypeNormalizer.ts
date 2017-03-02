@@ -14,7 +14,7 @@ import {
 import * as path from 'path';
 import { normalizeType } from '../TypeNormalizer';
 import { ObjectType } from '../Types';
-import { validateAST } from '../Validator';
+import { validateSingleFragmentAST } from '../Validator';
 
 const schema = buildClientSchema(JSON.parse(fs.readFileSync(path.resolve(__dirname, 'schema.json'), 'utf-8')).data);
 

@@ -42,7 +42,7 @@
     "jest-environment-node-debug": "^1.0.0",
     "ts-jest": "^18.0.3",
     "ts-node": "^2.1.0",
-    "tslint": "^4.4.2",
-    "typescript": "^2.1.5"
+    "tslint": "4.5.1",
+    "typescript": "2.2.1"
   }
 }

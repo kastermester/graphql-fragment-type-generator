@@ -20,65 +20,8 @@ import {
 	Source,
 	TypeInfo,
 } from 'graphql';
+import { transformType } from './FragmentMapperUtilities';
 import * as T from './Types';
-
-function transformType(type: GraphQLOutputType): {
-	leafType: T.FragmentType;
-	fragmentType: T.FragmentType;
-} {
-	let leafGraphQLType = type;
-	const transformType: ((innerType: T.FragmentType) => T.FragmentType)[] = [];
-	let isScalarType = false;
-	let knownValues = null;
-	while (true) {
-		const currentType = leafGraphQLType;
-		if (currentType instanceof GraphQLNonNull) {
-			transformType.push((innerType) => ({
-				kind: 'NonNull',
-				nullableType: innerType as T.NullableFragmentType,
-				schemaType: currentType,
-			}));
-			leafGraphQLType = currentType.ofType;
-			continue;
-		}
-		if (currentType instanceof GraphQLList) {
-			transformType.push((innerType) => ({
-				elementType: innerType,
-				kind: 'List',
-				schemaType: currentType,
-			}));
-			leafGraphQLType = currentType.ofType;
-			continue;
-		}
-		if (leafGraphQLType instanceof GraphQLScalarType) {
-			isScalarType = true;
-		}
-		if (leafGraphQLType instanceof GraphQLEnumType) {
-			isScalarType = true;
-			knownValues = leafGraphQLType.getValues().map(v => v.value);
-		}
-		break;
-	}
-
-	const leafType: T.ScalarType | T.ObjectType = !isScalarType ? {
-		fields: [],
-		fragmentSpreads: [],
-		kind: 'Object',
-		schemaType: leafGraphQLType as GraphQLObjectType,
-	} : {
-			kind: 'Scalar',
-			knownPossibleValues: knownValues,
-			schemaType: leafGraphQLType as GraphQLScalarType,
-		};
-	const fragmentType = transformType.reverse().reduce(
-		(t, transformer) => transformer(t),
-		leafType as T.FragmentType,
-	);
-	return {
-		fragmentType: fragmentType,
-		leafType: leafType,
-	};
-}
 
 export function mapFragmentType(schema: GraphQLSchema, ast: DocumentNode, removeFieldsNamed?: string[]): T.ObjectType {
 	const stack: T.ObjectType[] = [];

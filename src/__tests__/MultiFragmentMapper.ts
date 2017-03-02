@@ -12,7 +12,7 @@ import {
 	Source,
 } from 'graphql';
 import * as path from 'path';
-import { mapFragmentType } from '../FragmentMapper';
+import { mapMultiFragmentType } from '../MultiFragmentMapper';
 
 function textToAST(text: string): DocumentNode {
 	return parse(new Source(text));
@@ -23,7 +23,7 @@ const schema = buildClientSchema(JSON.parse(fs.readFileSync(path.resolve(__dirna
 test('Can remove ignored fields', () => {
 	const ast = textToAST('fragment P on Planet { ignoredName: __typename }');
 
-	const mapped = mapFragmentType(schema, ast, ['ignoredName']);
+	const mapped = mapMultiFragmentType(schema, ast, 'P', ['ignoredName']);
 
 	const expected: typeof mapped = {
 		fields: [],
@@ -36,7 +36,7 @@ test('Can remove ignored fields', () => {
 test('Can map super simple fragment', () => {
 	const ast = textToAST('fragment P on Planet { name }');
 
-	const mapped = mapFragmentType(schema, ast);
+	const mapped = mapMultiFragmentType(schema, ast, 'P');
 
 	const expected: typeof mapped = {
 		fields: [
@@ -61,7 +61,7 @@ test('Can map super simple fragment', () => {
 test('Can map aliases', () => {
 	const ast = textToAST('fragment P on Planet { newName: name }');
 
-	const mapped = mapFragmentType(schema, ast);
+	const mapped = mapMultiFragmentType(schema, ast, 'P');
 
 	const expected: typeof mapped = {
 		fields: [
@@ -86,7 +86,7 @@ test('Can map aliases', () => {
 test('Can map inline fragment spreads', () => {
 	const ast = textToAST('fragment P on Node { ... on Planet { name } }');
 
-	const mapped = mapFragmentType(schema, ast);
+	const mapped = mapMultiFragmentType(schema, ast, 'P');
 
 	const expected: typeof mapped = {
 		fields: [],
@@ -118,7 +118,70 @@ test('Can map inline fragment spreads', () => {
 test('Can map multiple inline fragment spreads', () => {
 	const ast = textToAST('fragment P on Node { ... on Planet { name } ... on Person { gender birthYear } }');
 
-	const mapped = mapFragmentType(schema, ast);
+	const mapped = mapMultiFragmentType(schema, ast, 'P');
+
+	const expected: typeof mapped = {
+		fields: [],
+		fragmentSpreads: [
+			{
+				fields: [
+					{
+						fieldName: 'name',
+						resultFieldName: 'name',
+						schemaType: GraphQLString,
+						type: {
+							kind: 'Scalar',
+							knownPossibleValues: null,
+							schemaType: GraphQLString,
+						},
+					},
+				],
+				fragmentSpreads: [],
+				kind: 'Object',
+				schemaType: schema.getType('Planet') as GraphQLObjectType,
+			},
+			{
+				fields: [
+					{
+						fieldName: 'gender',
+						resultFieldName: 'gender',
+						schemaType: GraphQLString,
+						type: {
+							kind: 'Scalar',
+							knownPossibleValues: null,
+							schemaType: GraphQLString,
+						},
+					},
+					{
+						fieldName: 'birthYear',
+						resultFieldName: 'birthYear',
+						schemaType: GraphQLString,
+						type: {
+							kind: 'Scalar',
+							knownPossibleValues: null,
+							schemaType: GraphQLString,
+						},
+					},
+				],
+				fragmentSpreads: [],
+				kind: 'Object',
+				schemaType: schema.getType('Person') as GraphQLObjectType,
+			},
+		],
+		kind: 'Object',
+		schemaType: schema.getType('Node') as GraphQLInterfaceType,
+	};
+	expect(mapped).toEqual(expected);
+});
+
+test('Can map multiple named fragment spreads', () => {
+	const ast = textToAST(`
+	fragment Planet on Planet { name }
+	fragment Person on Person { gender birthYear }
+	fragment Root on Node { ...Planet ...Person }
+	`);
+
+	const mapped = mapMultiFragmentType(schema, ast, 'Root');
 
 	const expected: typeof mapped = {
 		fields: [],
@@ -177,7 +240,7 @@ test('Can map multiple inline fragment spreads', () => {
 test('Can map mixes between field selections and fragments', () => {
 	const ast = textToAST('fragment P on Node { id ... on Planet { name } ... on Person { gender birthYear } }');
 
-	const mapped = mapFragmentType(schema, ast);
+	const mapped = mapMultiFragmentType(schema, ast, 'P');
 
 	const expected: typeof mapped = {
 		fields: [
