@@ -1,7 +1,11 @@
 import * as fs from 'fs';
 import { buildClientSchema, GraphQLError } from 'graphql';
 import * as path from 'path';
-import { getFragmentTextBrandedTypeDefinition, getMultiFragmentTextBrandedTypeDefinition, getMultiFragmentTextTypeDefinition } from '../index';
+import {
+	getFragmentTextBrandedTypeDefinition,
+	getMultiFragmentTextBrandedTypeDefinition,
+	getMultiFragmentTextTypeDefinition,
+} from '../index';
 
 const schema = buildClientSchema(JSON.parse(fs.readFileSync(path.resolve(__dirname, 'schema.json'), 'utf-8')).data);
 
