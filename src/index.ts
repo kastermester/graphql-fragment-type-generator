@@ -30,7 +30,6 @@ function getNormalizedAst(
 	return normalizeType(schema, ast);
 }
 
-
 function getNormalizedMultiFragmentAst(
 	schema: GraphQLSchema,
 	fragmentText: string,
