@@ -36,12 +36,12 @@ export function transformType(type: GraphQLOutputType): {
 			leafGraphQLType = currentType.ofType;
 			continue;
 		}
-		if (leafGraphQLType instanceof GraphQLScalarType) {
+		if (currentType instanceof GraphQLScalarType) {
 			isScalarType = true;
 		}
-		if (leafGraphQLType instanceof GraphQLEnumType) {
+		if (currentType instanceof GraphQLEnumType) {
 			isScalarType = true;
-			knownValues = leafGraphQLType.getValues().map(v => v.value);
+			knownValues = currentType.getValues().map(v => v.value);
 		}
 		break;
 	}

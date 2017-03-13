@@ -17,15 +17,6 @@ function getNormalizedAst(
 	fieldsToIgnore?: string[],
 ): T.FlattenedObjectType {
 	const gqlAst = parse(new Source(fragmentText));
-	const errors = validateSingleFragmentAST(schema, gqlAst);
-
-	if (errors.length > 0) {
-		if (errors.length === 1) {
-			throw errors[0];
-		}
-		throw new AggregateError(errors);
-	}
-
 	const ast = mapFragmentType(schema, gqlAst, fieldsToIgnore);
 	return normalizeType(schema, ast);
 }
