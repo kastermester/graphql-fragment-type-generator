@@ -1,0 +1,11 @@
+src/
+types/
+docs/
+coverage/
+.vscode/
+tsconfig-build.json
+tsconfig-test.json
+tsconfig.json
+tslint.json
+.gitignore
+.gitlab-ci.yml
