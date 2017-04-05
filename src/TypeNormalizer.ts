@@ -78,6 +78,7 @@ function flattenFragmentSpread(
 			const innerFragmentSpreads = flattenFragmentSpread(schema, s, possibleSpreadTypes);
 			innerFragmentSpreads.forEach(t => carry.push(t));
 			const fields = s.fields.map(f => ({
+				exportName: f.exportName,
 				fieldName: f.fieldName,
 				resultFieldName: f.resultFieldName,
 				schemaType: f.schemaType,
@@ -85,7 +86,7 @@ function flattenFragmentSpread(
 			}));
 			for (const t of possibleInnerSpreadTypes) {
 				carry.push({
-					fields: withMeta(mapWithConstantTypeNameValues(fields, t), t),
+					fields: withMeta(mapWithConstantTypeNameValues(fields, t, false), t),
 					kind: 'SpecificObject',
 					schemaType: t,
 				});
@@ -93,6 +94,7 @@ function flattenFragmentSpread(
 		});
 
 		const fields = spread.fields.map(f => ({
+			exportName: f.exportName,
 			fieldName: f.fieldName,
 			resultFieldName: f.resultFieldName,
 			schemaType: f.schemaType,
@@ -113,6 +115,7 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 	const possibleTypes = sortBy(possibleTypesForType(schema, type.schemaType), (t) => t.name);
 	const fields = type.fields.map(f => {
 		return {
+			exportName: f.exportName,
 			fieldName: f.fieldName,
 			resultFieldName: f.resultFieldName,
 			schemaType: f.schemaType,
@@ -131,7 +134,7 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 
 	if (spreads.length === 0) {
 		return {
-			fields: withMeta(mapWithConstantTypeNameValues(fields, possibleTypes), type.schemaType),
+			fields: withMeta(mapWithConstantTypeNameValues(fields, possibleTypes, false), type.schemaType),
 			fragmentSpreads: null,
 			kind: 'Object',
 			objectKind: 'Single',
@@ -146,7 +149,10 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 		possibleTypes[0] === spreads[0].schemaType
 	) {
 		return {
-			fields: withMeta(mapWithConstantTypeNameValues(spreads[0].fields, spreads[0].schemaType), spreads[0].schemaType),
+			fields: withMeta(
+				mapWithConstantTypeNameValues(spreads[0].fields, spreads[0].schemaType, false),
+				spreads[0].schemaType,
+			),
 			fragmentSpreads: null,
 			kind: 'Object',
 			objectKind: 'Single',
@@ -169,7 +175,7 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 	const collapsedSpreads = collapseFragmentSpreads(schema, [], spreads.concat(fieldsToSpreads));
 
 	const constantMappedSpreads: T.FlattenedSpreadType[] = collapsedSpreads.map(s => ({
-		fields: withMeta(mapWithConstantTypeNameValues(s.fields, s.schemaType), s.schemaType),
+		fields: withMeta(mapWithConstantTypeNameValues(s.fields, s.schemaType, false), s.schemaType),
 		kind: 'SpecificObject' as 'SpecificObject',
 		schemaType: s.schemaType,
 	}));
@@ -178,7 +184,7 @@ export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.Flat
 		[{
 			fields: withMeta(
 				sortBy(
-					mapWithConstantTypeNameValues(fields, missingTypes),
+					mapWithConstantTypeNameValues(fields, missingTypes, false),
 					t => t.resultFieldName,
 				),
 				type.schemaType,
@@ -354,6 +360,7 @@ function isSameType(type1: T.FlattenedType, type2: T.FlattenedType): boolean {
 export function mapWithConstantTypeNameValues(
 	fields: T.FlattenedFieldInfo[],
 	types: GraphQLObjectType | GraphQLObjectType[],
+	removeConstantExportedNames: boolean,
 ): T.FlattenedFieldInfo[] {
 	const possibleTypes = (types instanceof GraphQLObjectType ? [types] : types).map(t => t.name);
 	const SCALAR = 'Scalar';
@@ -363,6 +370,7 @@ export function mapWithConstantTypeNameValues(
 		if (f.fieldName === '__typename') {
 			const type = (f.type as T.NonNullType);
 			return {
+				exportName: removeConstantExportedNames ? null : f.exportName,
 				fieldName: f.fieldName,
 				resultFieldName: f.resultFieldName,
 				schemaType: f.schemaType,

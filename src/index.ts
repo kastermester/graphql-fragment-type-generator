@@ -1,9 +1,10 @@
 import * as AggregateError from 'aggregate-error';
 import { buildClientSchema, parse, GraphQLSchema, Source } from 'graphql';
+import { extractNamedTypes } from './ExtractNamedTypes';
 import { mapFragmentType } from './FragmentMapper';
 import { mapMultiFragmentType } from './MultiFragmentMapper';
 import { printType } from './Printer';
-import { decorateWithTypeBrands, getTypeBrandNames } from './TypeBrandDecorator';
+import { decorateTypeWithTypeBrands, decorateWithTypeBrands, getTypeBrandNames } from './TypeBrandDecorator';
 import { normalizeType } from './TypeNormalizer';
 import * as T from './Types';
 import {
@@ -48,7 +49,7 @@ export function getFragmentTextTypeDefinition(
 	indentSpaces?: number,
 ): string {
 	const ast = getNormalizedAst(schema, fragmentText, fieldsToIgnore);
-	return printType(false, ast, indentSpaces);
+	return printType(false, ast, false, indentSpaces);
 }
 
 export function getMultiFragmentTextTypeDefinition(
@@ -59,13 +60,20 @@ export function getMultiFragmentTextTypeDefinition(
 	indentSpaces?: number,
 ): string {
 	const ast = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
-	return printType(false, ast, indentSpaces);
+	return printType(false, ast, false, indentSpaces);
 }
 
 export interface BrandedTypeResult {
 	fragmentTypeText: string;
 	brandsToImport: string[];
 	fragmentTypeBrandText: string;
+}
+
+export interface NamedBrandedTypeResult {
+	exportNamesTypeScriptCode: string;
+	fragmentTypeText: string;
+	fragmentTypeBrandText: string;
+	brandsToImport: string[];
 }
 
 export function getFragmentTextBrandedTypeDefinition(
@@ -75,7 +83,7 @@ export function getFragmentTextBrandedTypeDefinition(
 	indentSpaces?: number,
 ): BrandedTypeResult {
 	const normalizedAst = getNormalizedAst(schema, fragmentText, fieldsToIgnore);
-	return getTypeBrandedTypeDefinition(normalizedAst, indentSpaces);
+	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces);
 }
 
 export function getMultiFragmentTextBrandedTypeDefinition(
@@ -86,11 +94,33 @@ export function getMultiFragmentTextBrandedTypeDefinition(
 	indentSpaces?: number,
 ): BrandedTypeResult {
 	const normalizedAst = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
-	return getTypeBrandedTypeDefinition(normalizedAst, indentSpaces);
+	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces);
+}
+
+export function getFragmentTextBrandedTypeWithNamesDefinition(
+	schema: GraphQLSchema,
+	fragmentText: string,
+	fieldsToIgnore?: string[],
+	indentSpaces?: number,
+): NamedBrandedTypeResult {
+	const normalizedAst = getNormalizedAst(schema, fragmentText, fieldsToIgnore);
+	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces);
+}
+
+export function getMultiFragmentTextBrandedTypeWithNamesDefinition(
+	schema: GraphQLSchema,
+	fragmentText: string,
+	rootFragmentName: string,
+	fieldsToIgnore?: string[],
+	indentSpaces?: number,
+): NamedBrandedTypeResult {
+	const normalizedAst = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
+	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces);
 }
 
 function getTypeBrandedTypeDefinition(
 	normalizedAst: T.FlattenedObjectType,
+	withNames: boolean,
 	indentSpaces?: number,
 ): BrandedTypeResult {
 	const brandedAst = decorateWithTypeBrands(normalizedAst);
@@ -98,19 +128,45 @@ function getTypeBrandedTypeDefinition(
 	const names = getTypeBrandNames(brandedAst);
 
 	const brandsToImport = names.allRequiredNames;
-	if (indentSpaces == null) {
-		indentSpaces = 0;
-	}
-	const framgnetTypeBrandText = `{
-${' '.repeat(indentSpaces + 2)}'': ${names.fragmentTypeNames.join(' | ')};
-${' '.repeat(indentSpaces)}}`;
+	const fragmentTypeBrandText = getFragmentTypeBrandText(names.fragmentTypeNames);
 
-	const typeText = printType(false, brandedAst, indentSpaces);
+	const typeText = printType(false, brandedAst, withNames, indentSpaces);
 
 	return {
 		brandsToImport: brandsToImport,
-		fragmentTypeBrandText: framgnetTypeBrandText,
+		fragmentTypeBrandText: fragmentTypeBrandText,
 		fragmentTypeText: typeText,
+	};
+}
+
+function getFragmentTypeBrandText(names: string[], indentSpaces?: number): string {
+	if (indentSpaces == null) {
+		indentSpaces = 0;
+	}
+	return `{
+${' '.repeat(indentSpaces + 2)}'': ${names.join(' | ')};
+${' '.repeat(indentSpaces)}}`;
+}
+
+function getNamedTypeBrandedTypeDefinitions(
+	normalizedAst: T.FlattenedObjectType,
+	indentSpaces?: number,
+): NamedBrandedTypeResult {
+	const res = getTypeBrandedTypeDefinition(normalizedAst, true, indentSpaces);
+	const extractedNames = extractNamedTypes(normalizedAst);
+
+	const tsChunks: string[] = [];
+
+	extractedNames.forEach((type, name) => {
+		const decorated = decorateTypeWithTypeBrands(type);
+
+		const def = printType(false, decorated, true, 0);
+		tsChunks.push(`export type ${name} = ${def};`);
+	});
+
+	return {
+		...res,
+		exportNamesTypeScriptCode: tsChunks.join('\n'),
 	};
 }
 

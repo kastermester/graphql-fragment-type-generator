@@ -1,6 +1,7 @@
 import * as AggregateError from 'aggregate-error';
 import { validate, DocumentNode, GraphQLSchema, OperationDefinitionNode } from 'graphql';
-import { mapType } from './FragmentMapper';
+import { mapSchema } from './FragmentMapperUtilities';
+import { mapType } from './MultiFragmentMapper';
 import * as T from './Types';
 
 export function mapOperationType(
@@ -8,6 +9,7 @@ export function mapOperationType(
 	ast: DocumentNode,
 	removeFieldsNamed?: string[],
 ): T.ObjectType {
+	const schemaWithDirective = mapSchema(schema);
 	const errors = validate(schema, ast);
 	if (errors.length > 0) {
 		if (errors.length === 1) {

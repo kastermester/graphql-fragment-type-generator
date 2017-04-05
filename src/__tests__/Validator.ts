@@ -1,13 +1,16 @@
 import * as fs from 'fs';
 import { buildClientSchema, parse, DocumentNode, Source } from 'graphql';
 import * as path from 'path';
+import { mapSchema } from '../FragmentMapperUtilities';
 import { validateMultiFragmentAST, validateSingleFragmentAST } from '../Validator';
 
 function textToAST(text: string): DocumentNode {
 	return parse(new Source(text));
 }
 
-const schema = buildClientSchema(JSON.parse(fs.readFileSync(path.resolve(__dirname, 'schema.json'), 'utf-8')).data);
+const schema = mapSchema(
+	buildClientSchema(JSON.parse(fs.readFileSync(path.resolve(__dirname, 'schema.json'), 'utf-8')).data),
+);
 describe('Single', () => {
 	test('Should reject a full query', () => {
 		const doc = textToAST(`query { allPlanets { planets { name } } }`);
@@ -47,7 +50,7 @@ describe('Multi fragment', () => {
 	});
 
 	test('It should accept a single fragment', () => {
-		const doc = textToAST(`fragment P on Planet { name }`);
+		const doc = textToAST(`fragment P on Planet { name @typeName(name: "MyStringName") }`);
 
 		const errors = validateMultiFragmentAST(schema, doc, 'P');
 

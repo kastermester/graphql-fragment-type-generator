@@ -12,190 +12,475 @@ test('It can find all possible object types in a schema', () => {
 	expect(inputObjects).toEqual(
 		// tslint:disable:max-line-length
 		`export interface AddCommentInput {
+  /**
+   * The contents of the comment.
+   */
   body: string;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The Node ID of the subject to modify.
+   */
   subjectId: string;
 }
 
 export interface AddProjectCardInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The content of the card. Must be a member of the ProjectCardItem union
+   */
   contentId?: string | null;
+  /**
+   * The note on the card.
+   */
   note?: string | null;
+  /**
+   * The Node ID of the ProjectColumn.
+   */
   projectColumnId: string;
 }
 
 export interface AddProjectColumnInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The name of the column.
+   */
   name: string;
+  /**
+   * The Node ID of the project.
+   */
   projectId: string;
 }
 
 export interface AddPullRequestReviewCommentInput {
+  /**
+   * The text of the comment.
+   */
   body: string;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The SHA of the commit to comment on.
+   */
   commitOID?: string | null;
+  /**
+   * The comment id to reply to.
+   */
   inReplyTo?: string | null;
+  /**
+   * The relative path of the file to comment on.
+   */
   path?: string | null;
+  /**
+   * The line index in the diff to comment on.
+   */
   position?: number | null;
+  /**
+   * The Node ID of the review to modify.
+   */
   pullRequestReviewId: string;
 }
 
 export interface AddPullRequestReviewInput {
+  /**
+   * The contents of the review body comment.
+   */
   body?: string | null;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The review line comments.
+   */
   comments?: (DraftPullRequestReviewComment | null)[] | null;
+  /**
+   * The event to perform on the pull request review.
+   */
   event?: PullRequestReviewEvent | null;
+  /**
+   * The Node ID of the pull request to modify.
+   */
   pullRequestId: string;
 }
 
 export interface AddReactionInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The name of the emoji to react with.
+   */
   content: ReactionContent;
+  /**
+   * The Node ID of the subject to modify.
+   */
   subjectId: string;
 }
 
 export interface CommitAuthor {
+  /**
+   * Email addresses to filter by. Commits authored by any of the specified email addresses will be returned.
+   */
   emails?: string[] | null;
+  /**
+   * ID of a User to filter by. If non-null, only commits authored by this user will be returned. This field takes precedence over emails.
+   */
   id?: string | null;
 }
 
 export interface CreateProjectInput {
+  /**
+   * The description of project.
+   */
   body?: string | null;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The name of project.
+   */
   name: string;
+  /**
+   * The owner ID to create the project under.
+   */
   ownerId: string;
 }
 
 export interface DeleteProjectCardInput {
+  /**
+   * The id of the card to delete.
+   */
   cardId: string;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
 }
 
 export interface DeleteProjectColumnInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The id of the column to delete.
+   */
   columnId: string;
 }
 
 export interface DeleteProjectInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The Project ID to update.
+   */
   projectId: string;
 }
 
 export interface DeletePullRequestReviewInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The Node ID of the pull request review to delete.
+   */
   pullRequestReviewId: string;
 }
 
 export interface DismissPullRequestReviewInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The contents of the pull request review dismissal message.
+   */
   message: string;
+  /**
+   * The Node ID of the pull request review to modify.
+   */
   pullRequestReviewId: string;
 }
 
 export interface DraftPullRequestReviewComment {
+  /**
+   * Body of the comment to leave.
+   */
   body: string;
+  /**
+   * Path to the file being commented on.
+   */
   path: string;
+  /**
+   * Position in the file to leave a comment on.
+   */
   position: number;
 }
 
 export interface LanguageOrder {
+  /**
+   * The ordering direction.
+   */
   direction: OrderDirection;
+  /**
+   * The field to order languages by.
+   */
   field: LanguageOrderField;
 }
 
 export interface MoveProjectCardInput {
+  /**
+   * Place the new card after the card with this id. Pass null to place it at the top.
+   */
   afterCardId?: string | null;
+  /**
+   * The id of the card to move.
+   */
   cardId: string;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The id of the column to move it into.
+   */
   columnId: string;
 }
 
 export interface MoveProjectColumnInput {
+  /**
+   * Place the new column after the column with this id. Pass null to place it at the front.
+   */
   afterColumnId?: string | null;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The id of the column to move.
+   */
   columnId: string;
 }
 
 export interface ProjectOrder {
+  /**
+   * The direction in which to order projects by the specified field.
+   */
   direction: OrderDirection;
+  /**
+   * The field in which to order projects by.
+   */
   field: ProjectOrderField;
 }
 
 export interface ReactionOrder {
+  /**
+   * The direction in which to order reactions by the specified field.
+   */
   direction: OrderDirection;
+  /**
+   * The field in which to order reactions by.
+   */
   field: ReactionOrderField;
 }
 
 export interface RemoveOutsideCollaboratorInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The ID of the organization to remove the outside collaborator from.
+   */
   organizationId: string;
+  /**
+   * The ID of the outside collaborator to remove.
+   */
   userId: string;
 }
 
 export interface RemoveReactionInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The name of the emoji to react with.
+   */
   content: ReactionContent;
+  /**
+   * The Node ID of the subject to modify.
+   */
   subjectId: string;
 }
 
 export interface RepositoryOrder {
+  /**
+   * The ordering direction.
+   */
   direction: OrderDirection;
+  /**
+   * The field to order repositories by.
+   */
   field: RepositoryOrderField;
 }
 
 export interface RequestReviewsInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The Node ID of the pull request to modify.
+   */
   pullRequestId: string;
+  /**
+   * Add users to the set rather than replace.
+   */
   union?: boolean | null;
+  /**
+   * The Node IDs of the users to request.
+   */
   userIds: string[];
 }
 
 export interface StarOrder {
+  /**
+   * The direction in which to order nodes.
+   */
   direction: OrderDirection;
+  /**
+   * The field in which to order nodes by.
+   */
   field: StarOrderField;
 }
 
 export interface SubmitPullRequestReviewInput {
+  /**
+   * The text field to set on the Pull Request Review.
+   */
   body?: string | null;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The event to send to the Pull Request Review.
+   */
   event: PullRequestReviewEvent;
+  /**
+   * The Pull Request Review ID to submit.
+   */
   pullRequestReviewId: string;
 }
 
 export interface UpdateProjectCardInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The note of ProjectCard.
+   */
   note: string;
+  /**
+   * The ProjectCard ID to update.
+   */
   projectCardId: string;
 }
 
 export interface UpdateProjectColumnInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The name of project column.
+   */
   name: string;
+  /**
+   * The ProjectColumn ID to update.
+   */
   projectColumnId: string;
 }
 
 export interface UpdateProjectInput {
+  /**
+   * The description of project.
+   */
   body?: string | null;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The name of project.
+   */
   name: string;
+  /**
+   * The Project ID to update.
+   */
   projectId: string;
 }
 
 export interface UpdatePullRequestReviewCommentInput {
+  /**
+   * The text of the comment.
+   */
   body: string;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The Node ID of the comment to modify.
+   */
   pullRequestReviewCommentId: string;
 }
 
 export interface UpdatePullRequestReviewInput {
+  /**
+   * The contents of the pull request review body.
+   */
   body: string;
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The Node ID of the pull request review to modify.
+   */
   pullRequestReviewId: string;
 }
 
 export interface UpdateSubscriptionInput {
+  /**
+   * A unique identifier for the client performing the mutation.
+   */
   clientMutationId?: string | null;
+  /**
+   * The new state of the subscription.
+   */
   state: SubscriptionState;
+  /**
+   * The Node ID of the subscribable object to modify.
+   */
   subscribableId: string;
 }
 

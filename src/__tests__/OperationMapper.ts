@@ -33,12 +33,14 @@ test('Can remove ignored fields', () => {
 	const expected: typeof mapped = {
 		fields: [
 			{
+				exportName: null,
 				fieldName: 'person',
 				resultFieldName: 'person',
 				schemaType: schema.getType('Person') as GraphQLObjectType,
 				type: {
 					fields: [
 						{
+							exportName: null,
 							fieldName: 'name',
 							resultFieldName: 'name',
 							schemaType: GraphQLString,

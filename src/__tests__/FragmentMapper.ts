@@ -41,6 +41,7 @@ test('Can map super simple fragment', () => {
 	const expected: typeof mapped = {
 		fields: [
 			{
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'name',
 				schemaType: GraphQLString,
@@ -66,8 +67,35 @@ test('Can map aliases', () => {
 	const expected: typeof mapped = {
 		fields: [
 			{
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'newName',
+				schemaType: GraphQLString,
+				type: {
+					kind: 'Scalar',
+					knownPossibleValues: null,
+					schemaType: GraphQLString,
+				},
+			},
+		],
+		fragmentSpreads: [],
+		kind: 'Object',
+		schemaType: schema.getType('Planet') as GraphQLObjectType,
+	};
+	expect(mapped).toEqual(expected);
+});
+
+test('Can map export names', () => {
+	const ast = textToAST('fragment P on Planet { name @exportType(name: "MyName") }');
+
+	const mapped = mapFragmentType(schema, ast);
+
+	const expected: typeof mapped = {
+		fields: [
+			{
+				exportName: 'MyName',
+				fieldName: 'name',
+				resultFieldName: 'name',
 				schemaType: GraphQLString,
 				type: {
 					kind: 'Scalar',
@@ -94,6 +122,7 @@ test('Can map inline fragment spreads', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -126,6 +155,7 @@ test('Can map multiple inline fragment spreads', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -143,6 +173,7 @@ test('Can map multiple inline fragment spreads', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -153,6 +184,7 @@ test('Can map multiple inline fragment spreads', () => {
 						},
 					},
 					{
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,
@@ -182,6 +214,7 @@ test('Can map mixes between field selections and fragments', () => {
 	const expected: typeof mapped = {
 		fields: [
 			{
+				exportName: null,
 				fieldName: 'id',
 				resultFieldName: 'id',
 				schemaType: new GraphQLNonNull(GraphQLID),
@@ -200,6 +233,7 @@ test('Can map mixes between field selections and fragments', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -217,6 +251,7 @@ test('Can map mixes between field selections and fragments', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -227,6 +262,7 @@ test('Can map mixes between field selections and fragments', () => {
 						},
 					},
 					{
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,

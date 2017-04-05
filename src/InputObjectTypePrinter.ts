@@ -56,7 +56,13 @@ function printFields(type: GraphQLInputObjectType): string {
 	return Object.keys(fields).sort().map(fieldName => {
 		const fieldInfo = fields[fieldName];
 		const nullable = fieldInfo.defaultValue != null || !(fieldInfo.type instanceof GraphQLNonNull) ? '?' : '';
-		return `${indent}${fieldName}${nullable}: ${printType(true, fieldInfo.type)};`;
+		let comment = '';
+		if (fieldInfo.description != null && fieldInfo.description.length > 0) {
+			comment = `${indent}/**\n${indent} * ` +
+				fieldInfo.description.replace(/\n/g, `\n${indent} * `).replace(/\*\//g, '* /') +
+				`\n${indent} */\n`;
+		}
+		return `${comment}${indent}${fieldName}${nullable}: ${printType(true, fieldInfo.type)};`;
 	}).join('\n');
 }
 

@@ -18,6 +18,7 @@ export interface FieldInfo {
 	resultFieldName: string;
 	schemaType: GraphQLOutputType;
 	type: FragmentType;
+	exportName: null | string;
 }
 
 export interface FlattenedFieldInfo {
@@ -25,6 +26,7 @@ export interface FlattenedFieldInfo {
 	resultFieldName: string;
 	schemaType: GraphQLOutputType;
 	type: FlattenedType;
+	exportName: null | string;
 }
 
 export interface FlattenedFieldInfoWithMeta extends FlattenedFieldInfo {

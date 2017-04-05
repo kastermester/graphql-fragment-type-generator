@@ -1,12 +1,38 @@
 import {
+	DirectiveLocation,
+	GraphQLDirective,
 	GraphQLEnumType,
 	GraphQLList,
 	GraphQLNonNull,
 	GraphQLObjectType,
 	GraphQLOutputType,
 	GraphQLScalarType,
+	GraphQLSchema,
+	GraphQLString,
 } from 'graphql';
 import * as T from './Types';
+
+export const typeNameDirective = new GraphQLDirective({
+	args: {
+		name: {
+			description: 'The name this type should be exported with',
+			type: new GraphQLNonNull(GraphQLString),
+		},
+	},
+	description: 'Marks the given type to be exported in the generated file',
+	locations: [DirectiveLocation.FIELD],
+	name: 'exportType',
+});
+
+export function mapSchema(schema: GraphQLSchema): GraphQLSchema {
+
+	return new GraphQLSchema({
+		directives: [typeNameDirective],
+		mutation: schema.getMutationType(),
+		query: schema.getQueryType(),
+		subscription: schema.getSubscriptionType(),
+	});
+}
 
 export function transformType(type: GraphQLOutputType): {
 	leafType: T.FragmentType;

@@ -24,6 +24,7 @@ test('Can decorate super simple fragment', () => {
 			{
 				deprecationReason: null,
 				description: null,
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'name',
 				schemaType: GraphQLString,
@@ -46,6 +47,7 @@ test('Can decorate super simple fragment', () => {
 			{
 				deprecationReason: null,
 				description: null,
+				exportName: null,
 				fieldName: '',
 				resultFieldName: '',
 				schemaType: new GraphQLNonNull(GraphQLString),
@@ -61,6 +63,7 @@ test('Can decorate super simple fragment', () => {
 			{
 				deprecationReason: null,
 				description: null,
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'name',
 				schemaType: GraphQLString,
@@ -94,6 +97,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -139,6 +143,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -160,6 +165,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -181,6 +187,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -196,6 +203,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -214,6 +222,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -235,6 +244,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -256,6 +266,7 @@ test('Can decorate inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),

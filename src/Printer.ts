@@ -154,6 +154,7 @@ function scalarTypeToTSType(type: GraphQLScalarType): string {
 export function printType(
 	nullable: boolean,
 	type: T.FlattenedType,
+	withNames: boolean,
 	indentLevel?: number,
 ): string {
 	indentLevel = indentLevel != null ? indentLevel : 0;
@@ -174,11 +175,11 @@ export function printType(
 			return wrap(scalarTypeToTSType(type.schemaType as GraphQLScalarType));
 		}
 		case 'NonNull': {
-			return printType(false, type.nullableType, indentLevel + 2);
+			return printType(false, type.nullableType, withNames, indentLevel + 2);
 		}
 		case 'List': {
 			const complexElementType = isParenAroundTypeNeeded(type.elementType);
-			const elementType = printType(true, type.elementType, indentLevel);
+			const elementType = printType(true, type.elementType, withNames, indentLevel);
 			return wrap(
 				complexElementType ?
 					`(${elementType})[]` :
@@ -210,7 +211,11 @@ export function printType(
 						}
 						buffer.push(`${indents}   */`);
 					}
-					buffer.push(`${indents + '  '}${fieldName}: ${printType(true, f.type, i + 4)};`);
+
+					const typeDef = withNames && f.exportName != null ? (
+						f.type.kind === 'NonNull' ? f.exportName : `${f.exportName} | null`
+					) : printType(true, f.type, withNames, i + 4);
+					buffer.push(`${indents + '  '}${fieldName}: ${typeDef};`);
 					if (idx < fields.length - 1) {
 						buffer.push('');
 					}

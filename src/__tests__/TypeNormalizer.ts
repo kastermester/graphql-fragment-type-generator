@@ -22,6 +22,7 @@ test('Can normalize super simple fragment', () => {
 	const type: ObjectType = {
 		fields: [
 			{
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'name',
 				schemaType: GraphQLString,
@@ -44,6 +45,7 @@ test('Can normalize super simple fragment', () => {
 			{
 				deprecationReason: null,
 				description: 'The name of this planet.',
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'name',
 				schemaType: GraphQLString,
@@ -66,6 +68,7 @@ test('Can normalize aliases', () => {
 	const type: ObjectType = {
 		fields: [
 			{
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'newName',
 				schemaType: GraphQLString,
@@ -88,6 +91,7 @@ test('Can normalize aliases', () => {
 			{
 				deprecationReason: null,
 				description: 'The name of this planet.',
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'newName',
 				schemaType: GraphQLString,
@@ -113,6 +117,7 @@ test('Can normalize inline fragment spreads', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -142,6 +147,7 @@ test('Can normalize inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: 'The name of this planet.',
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -188,6 +194,7 @@ test('Can normalize multiple inline fragment spreads', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -205,6 +212,7 @@ test('Can normalize multiple inline fragment spreads', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -215,6 +223,7 @@ test('Can normalize multiple inline fragment spreads', () => {
 						},
 					},
 					{
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,
@@ -247,6 +256,7 @@ test('Can normalize multiple inline fragment spreads', () => {
 						'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
 						'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
 						'episode IV: A New Hope.',
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,
@@ -261,6 +271,7 @@ test('Can normalize multiple inline fragment spreads', () => {
 						description:
 						'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
 						'if the person does not have a gender.',
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -279,6 +290,7 @@ test('Can normalize multiple inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: 'The name of this planet.',
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -321,6 +333,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 	const type: ObjectType = {
 		fields: [
 			{
+				exportName: null,
 				fieldName: 'id',
 				resultFieldName: 'id',
 				schemaType: new GraphQLNonNull(GraphQLID),
@@ -335,6 +348,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 				},
 			},
 			{
+				exportName: null,
 				fieldName: '__typename',
 				resultFieldName: '__typename',
 				schemaType: new GraphQLNonNull(GraphQLString),
@@ -353,6 +367,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -370,6 +385,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 			{
 				fields: [
 					{
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -380,6 +396,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 						},
 					},
 					{
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,
@@ -409,6 +426,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '__typename',
 						resultFieldName: '__typename',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -428,6 +446,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 						'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
 						'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
 						'episode IV: A New Hope.',
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,
@@ -442,6 +461,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 						description:
 						'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
 						'if the person does not have a gender.',
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -454,6 +474,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description: 'The ID of an object',
+						exportName: null,
 						fieldName: 'id',
 						resultFieldName: 'id',
 						schemaType: new GraphQLNonNull(GraphQLID),
@@ -476,6 +497,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '__typename',
 						resultFieldName: '__typename',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -492,6 +514,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description: 'The ID of an object',
+						exportName: null,
 						fieldName: 'id',
 						resultFieldName: 'id',
 						schemaType: new GraphQLNonNull(GraphQLID),
@@ -508,6 +531,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description: 'The name of this planet.',
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -526,6 +550,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '__typename',
 						resultFieldName: '__typename',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -542,6 +567,7 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description: 'The id of the object.',
+						exportName: null,
 						fieldName: 'id',
 						resultFieldName: 'id',
 						schemaType: new GraphQLNonNull(GraphQLID),

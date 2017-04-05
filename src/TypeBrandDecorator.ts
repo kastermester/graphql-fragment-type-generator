@@ -7,10 +7,35 @@ import * as T from './Types';
 import { sortBy } from './utils';
 
 export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.FlattenedObjectType {
-	if (type.objectKind === 'Single') {
+	if (type.objectKind === 'Single' && type.schemaTypes.length === 1) {
 		return {
 			...type,
-			fields: decorateFieldsWithTypeBrands(type.fields, type.schemaTypes),
+			fields: decorateFieldsWithTypeBrands(type.fields, type.schemaTypes[0]),
+		};
+	}
+
+	if (type.objectKind === 'Single') {
+		const spreadFields = type.schemaTypes.map(
+			(schemaType: GraphQLObjectType): T.FlattenedSpecificObjectType => {
+				return {
+					fields: decorateFieldsWithTypeBrands(
+						withMeta(
+							mapWithConstantTypeNameValues(sortBy(type.fields, s => s.resultFieldName), [schemaType], true),
+							schemaType,
+						),
+						schemaType,
+					),
+					kind: 'SpecificObject',
+					schemaType: schemaType,
+				};
+			},
+		);
+		return {
+			fields: null,
+			fragmentSpreads: sortBy(spreadFields, (t) => t.schemaType.name),
+			kind: 'Object',
+			objectKind: 'Spread',
+			schemaTypes: type.schemaTypes,
 		};
 	}
 
@@ -19,17 +44,17 @@ export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.Flattened
 			if (s.kind === 'SpecificObject') {
 				carry.push({
 					...s,
-					fields: decorateFieldsWithTypeBrands(s.fields, [s.schemaType]),
+					fields: decorateFieldsWithTypeBrands(s.fields, s.schemaType),
 				});
 			} else {
 				for (const t of s.schemaTypes) {
 					carry.push({
 						fields: decorateFieldsWithTypeBrands(
 							withMeta(
-								mapWithConstantTypeNameValues(s.fields, [t]),
+								mapWithConstantTypeNameValues(s.fields, [t], true),
 								t,
 							),
-							[t],
+							t,
 						),
 						kind: 'SpecificObject',
 						schemaType: t,
@@ -47,14 +72,39 @@ export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.Flattened
 	};
 }
 
+export function decorateTypeWithTypeBrands(
+	type: T.FlattenedType,
+): T.FlattenedType {
+	if (type.kind === 'Object') {
+		return decorateWithTypeBrands(type);
+	}
+
+	if (type.kind === 'NonNull') {
+		return {
+			...type,
+			nullableType: decorateTypeWithTypeBrands(type.nullableType) as T.FlattenedNullableType,
+		};
+	}
+
+	if (type.kind === 'List') {
+		return {
+			...type,
+			elementType: decorateTypeWithTypeBrands(type.elementType),
+		};
+	}
+
+	return type;
+}
+
 function decorateFieldsWithTypeBrands(
 	fields: T.FlattenedFieldInfoWithMeta[],
-	types: GraphQLObjectType[],
+	type: GraphQLObjectType,
 ): T.FlattenedFieldInfoWithMeta[] {
 	return [
 		{
 			deprecationReason: null,
 			description: null,
+			exportName: null,
 			fieldName: '',
 			resultFieldName: '',
 			schemaType: new GraphQLNonNull(GraphQLString),
@@ -62,19 +112,16 @@ function decorateFieldsWithTypeBrands(
 				kind: 'NonNull',
 				nullableType: {
 					kind: 'Reference',
-					names: types.map(e => e.name),
+					names: [type.name],
 				},
 				schemaType: new GraphQLNonNull(GraphQLString),
 			},
 		},
 		...fields.map((f) => {
-			if (f.type.kind === 'Object') {
-				return {
-					...f,
-					type: decorateWithTypeBrands(f.type),
-				};
-			}
-			return f;
+			return {
+				...f,
+				type: decorateTypeWithTypeBrands(f.type),
+			};
 		}),
 	];
 }
@@ -88,9 +135,19 @@ export function getTypeBrandNames(type: T.FlattenedObjectType): TypeBrands {
 	const names = new Set<string>();
 	const visitFields = (fields: T.FlattenedFieldInfo[]) => {
 		for (const field of fields) {
-			if (field.type.kind === 'Object') {
-				visitObjectType(field.type);
-			}
+			visitType(field.type);
+		}
+	};
+
+	const visitType = (flattenedType: T.FlattenedType): void => {
+		if (flattenedType.kind === 'Object') {
+			return visitObjectType(flattenedType);
+		}
+		if (flattenedType.kind === 'NonNull') {
+			return visitType(flattenedType.nullableType);
+		}
+		if (flattenedType.kind === 'List') {
+			return visitType(flattenedType.elementType);
 		}
 	};
 
