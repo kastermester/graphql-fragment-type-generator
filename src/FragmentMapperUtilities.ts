@@ -67,7 +67,7 @@ export function transformType(type: GraphQLOutputType): {
 		}
 		if (currentType instanceof GraphQLEnumType) {
 			isScalarType = true;
-			knownValues = currentType.getValues().map(v => v.value);
+			knownValues = currentType.getValues().map(v => v.name);
 		}
 		break;
 	}
