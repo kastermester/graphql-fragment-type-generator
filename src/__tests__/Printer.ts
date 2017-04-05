@@ -24,6 +24,7 @@ test('Can print super simple fragment', () => {
 			{
 				deprecationReason: null,
 				description: 'The name of this planet.',
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'name',
 				schemaType: GraphQLString,
@@ -40,7 +41,7 @@ test('Can print super simple fragment', () => {
 		schemaTypes: [schema.getType('Planet') as GraphQLObjectType],
 	};
 
-	const printed = printType(false, type);
+	const printed = printType(false, type, false);
 	const expected = `{
   /**
    * The name of this planet.
@@ -56,6 +57,7 @@ test('Can print aliases', () => {
 			{
 				deprecationReason: null,
 				description: 'The name of this planet.',
+				exportName: null,
 				fieldName: 'name',
 				resultFieldName: 'newName',
 				schemaType: GraphQLString,
@@ -71,7 +73,7 @@ test('Can print aliases', () => {
 		objectKind: 'Single',
 		schemaTypes: [schema.getType('Planet') as GraphQLObjectType],
 	};
-	const printed = printType(false, type);
+	const printed = printType(false, type, false);
 	const expected = `{
   /**
    * The name of this planet.
@@ -90,6 +92,7 @@ test('Can print inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: 'The name of this planet.',
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -126,7 +129,7 @@ test('Can print inline fragment spreads', () => {
 			schema.getType('Vehicle') as GraphQLObjectType,
 		],
 	};
-	const printed = printType(false, type);
+	const printed = printType(false, type, false);
 	const expected = `{
   /**
    * The name of this planet.
@@ -145,6 +148,7 @@ test('Can print multiple inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,
@@ -159,6 +163,7 @@ test('Can print multiple inline fragment spreads', () => {
 						description:
 						'The gender of this person. Either "Male", "Female" or "unknown",\n' +
 						'"n/a" if the person does not have a gender.',
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -177,6 +182,7 @@ test('Can print multiple inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description: 'The name of this planet.',
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -212,7 +218,7 @@ test('Can print multiple inline fragment spreads', () => {
 			schema.getType('Vehicle') as GraphQLObjectType,
 		],
 	};
-	const printed = printType(false, type);
+	const printed = printType(false, type, false);
 	const expected = `{
   birthYear: string | null;
 
@@ -239,6 +245,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '__typename',
 						resultFieldName: '__typename',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -255,6 +262,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
 						schemaType: GraphQLString,
@@ -267,6 +275,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
 						schemaType: GraphQLString,
@@ -279,6 +288,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: 'id',
 						resultFieldName: 'id',
 						schemaType: new GraphQLNonNull(GraphQLID),
@@ -301,6 +311,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '__typename',
 						resultFieldName: '__typename',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -317,6 +328,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: 'Test deprecation reason no description',
 						description: null,
+						exportName: null,
 						fieldName: 'id',
 						resultFieldName: 'id',
 						schemaType: new GraphQLNonNull(GraphQLID),
@@ -333,6 +345,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: 'Test deprecation reason',
 						description: 'The name of the planet.',
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -351,6 +364,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '__typename',
 						resultFieldName: '__typename',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -367,6 +381,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 					{
 						deprecationReason: null,
 						description: 'The ID of an object',
+						exportName: null,
 						fieldName: 'id',
 						resultFieldName: 'id',
 						schemaType: new GraphQLNonNull(GraphQLID),
@@ -402,7 +417,7 @@ test('Can print normalized type with mixed field selections and fragment spreads
 		],
 	};
 
-	const printed = printType(false, normalized);
+	const printed = printType(false, normalized, false);
 	const expected = `{
   __typename: "Person";
 
@@ -443,6 +458,7 @@ test('Can print branded types', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -466,6 +482,7 @@ test('Can print branded types', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -489,6 +506,7 @@ test('Can print branded types', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -504,6 +522,7 @@ test('Can print branded types', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: 'name',
 						resultFieldName: 'name',
 						schemaType: GraphQLString,
@@ -522,6 +541,7 @@ test('Can print branded types', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -545,6 +565,7 @@ test('Can print branded types', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -568,6 +589,7 @@ test('Can print branded types', () => {
 					{
 						deprecationReason: null,
 						description: null,
+						exportName: null,
 						fieldName: '',
 						resultFieldName: '',
 						schemaType: new GraphQLNonNull(GraphQLString),
@@ -599,7 +621,7 @@ test('Can print branded types', () => {
 		],
 	};
 
-	const printed = printType(false, type);
+	const printed = printType(false, type, false);
 	const expected = `{
   '': Film;
 } | {

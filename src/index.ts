@@ -1,8 +1,9 @@
 import * as AggregateError from 'aggregate-error';
-import { buildClientSchema, parse, GraphQLSchema, Source } from 'graphql';
+import { buildClientSchema, parse, validate, GraphQLSchema, Source } from 'graphql';
 import { extractNamedTypes } from './ExtractNamedTypes';
 import { mapFragmentType } from './FragmentMapper';
 import { mapMultiFragmentType } from './MultiFragmentMapper';
+import { mapOperationType } from './OperationMapper';
 import { printType } from './Printer';
 import { decorateTypeWithTypeBrands, decorateWithTypeBrands, getTypeBrandNames } from './TypeBrandDecorator';
 import { normalizeType } from './TypeNormalizer';
@@ -12,7 +13,7 @@ import {
 	validateSingleFragmentAST,
 } from './Validator';
 
-function getNormalizedAst(
+export function getNormalizedAst(
 	schema: GraphQLSchema,
 	fragmentText: string,
 	fieldsToIgnore?: string[],
@@ -22,7 +23,7 @@ function getNormalizedAst(
 	return normalizeType(schema, ast);
 }
 
-function getNormalizedMultiFragmentAst(
+export function getNormalizedMultiFragmentAst(
 	schema: GraphQLSchema,
 	fragmentText: string,
 	rootFragmentName: string,
@@ -39,6 +40,25 @@ function getNormalizedMultiFragmentAst(
 	}
 
 	const ast = mapMultiFragmentType(schema, gqlAst, rootFragmentName, fieldsToIgnore);
+	return normalizeType(schema, ast);
+}
+
+export function getNormalizedOperationAst(
+	schema: GraphQLSchema,
+	queryText: string,
+	fieldsToIgnore?: string[],
+): T.FlattenedObjectType {
+	const gqlAst = parse(new Source(queryText));
+	const errors = validate(schema, gqlAst);
+
+	if (errors.length > 0) {
+		if (errors.length === 1) {
+			throw errors[0];
+		}
+		throw new AggregateError(errors);
+	}
+
+	const ast = mapOperationType(schema, gqlAst, fieldsToIgnore);
 	return normalizeType(schema, ast);
 }
 
@@ -60,6 +80,16 @@ export function getMultiFragmentTextTypeDefinition(
 	indentSpaces?: number,
 ): string {
 	const ast = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
+	return printType(false, ast, false, indentSpaces);
+}
+
+export function getOperationTypeDefinition(
+	schema: GraphQLSchema,
+	queryText: string,
+	fieldsToIgnore?: string[],
+	indentSpaces?: number,
+): string {
+	const ast = getNormalizedOperationAst(schema, queryText, fieldsToIgnore);
 	return printType(false, ast, false, indentSpaces);
 }
 
@@ -97,6 +127,16 @@ export function getMultiFragmentTextBrandedTypeDefinition(
 	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces);
 }
 
+export function getOperationBrandedTypeDefinition(
+	schema: GraphQLSchema,
+	queryText: string,
+	fieldsToIgnore?: string[],
+	indentSpaces?: number,
+): BrandedTypeResult {
+	const normalizedAst = getNormalizedOperationAst(schema, queryText, fieldsToIgnore);
+	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces);
+}
+
 export function getFragmentTextBrandedTypeWithNamesDefinition(
 	schema: GraphQLSchema,
 	fragmentText: string,
@@ -115,6 +155,16 @@ export function getMultiFragmentTextBrandedTypeWithNamesDefinition(
 	indentSpaces?: number,
 ): NamedBrandedTypeResult {
 	const normalizedAst = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
+	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces);
+}
+
+export function getOperationBrandedTypeWithNamesDefinition(
+	schema: GraphQLSchema,
+	queryText: string,
+	fieldsToIgnore?: string[],
+	indentSpaces?: number,
+): NamedBrandedTypeResult {
+	const normalizedAst = getNormalizedOperationAst(schema, queryText, fieldsToIgnore);
 	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces);
 }
 

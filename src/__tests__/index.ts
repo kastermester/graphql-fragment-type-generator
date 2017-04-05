@@ -380,6 +380,57 @@ fragment P on Planet {
 	const res = getFragmentTextBrandedTypeWithNamesDefinition(schema, text);
 
 	//tslint:disable
-	console.log(res.fragmentTypeText);
-	console.log(res.exportNamesTypeScriptCode);
+	const fragmentText = `{
+  '': Planet;
+
+  residentConnection: {
+      '': PlanetResidentsConnection;
+
+      /**
+       * A list of edges.
+       */
+      edges: ({
+          '': PlanetResidentsEdge;
+
+          /**
+           * The item at the end of the edge
+           */
+          node: NodeType | null;
+        } | null)[] | null;
+    } | null;
+}`;
+	expect(res.fragmentTypeText).toEqual(fragmentText);
+	const typeNames = `export type NodeType = {
+  '': Person;
+
+  /**
+   * The name of this person.
+   */
+  name: string | null;
+
+  filmConnection: FilmType | null;
+};
+export type FilmType = {
+  '': PersonFilmsConnection;
+
+  /**
+   * A list of edges.
+   */
+  edges: ({
+      '': PersonFilmsEdge;
+
+      /**
+       * The item at the end of the edge
+       */
+      node: {
+          '': Film;
+
+          /**
+           * The ID of an object
+           */
+          id: string;
+        } | null;
+    } | null)[] | null;
+};`;
+	expect(res.exportNamesTypeScriptCode).toEqual(typeNames);
 });
