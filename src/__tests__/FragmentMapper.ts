@@ -6,6 +6,7 @@ import {
 	GraphQLInt,
 	GraphQLInterfaceType,
 	GraphQLID,
+	GraphQLList,
 	GraphQLNonNull,
 	GraphQLObjectType,
 	GraphQLString,
@@ -55,6 +56,36 @@ test('Can map super simple fragment', () => {
 		fragmentSpreads: [],
 		kind: 'Object',
 		schemaType: schema.getType('Planet') as GraphQLObjectType,
+	};
+	expect(mapped).toEqual(expected);
+});
+
+test('Can map super simple plural fragment', () => {
+	const ast = textToAST('fragment P on Planet @relay(plural: true) { name }');
+
+	const mapped = mapFragmentType(schema, ast);
+
+	const expected: typeof mapped = {
+		elementType: {
+			fields: [
+				{
+					exportName: null,
+					fieldName: 'name',
+					resultFieldName: 'name',
+					schemaType: GraphQLString,
+					type: {
+						kind: 'Scalar',
+						knownPossibleValues: null,
+						schemaType: GraphQLString,
+					},
+				},
+			],
+			fragmentSpreads: [],
+			kind: 'Object',
+			schemaType: schema.getType('Planet') as GraphQLObjectType,
+		},
+		kind: 'List',
+		schemaType: new GraphQLList(schema.getType('Planet')),
 	};
 	expect(mapped).toEqual(expected);
 });

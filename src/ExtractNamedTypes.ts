@@ -1,8 +1,10 @@
 import * as T from './Types';
 
-export function extractNamedTypes(type: T.FlattenedObjectType): Map<string, T.FlattenedNullableType> {
+export function extractNamedTypes(
+	type: T.FlattenedObjectType | T.FlattenedListType,
+): Map<string, T.FlattenedNullableType> {
 	const map = new Map<string, T.FlattenedNullableType>();
-	visitObjectType(type, map);
+	visitType(type, map);
 	return map;
 }
 

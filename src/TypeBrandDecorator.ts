@@ -131,7 +131,7 @@ export interface TypeBrands {
 	fragmentTypeNames: string[];
 }
 
-export function getTypeBrandNames(type: T.FlattenedObjectType): TypeBrands {
+export function getTypeBrandNames(type: T.FlattenedObjectType | T.FlattenedListType): TypeBrands {
 	const names = new Set<string>();
 	const visitFields = (fields: T.FlattenedFieldInfo[]) => {
 		for (const field of fields) {
@@ -167,14 +167,20 @@ export function getTypeBrandNames(type: T.FlattenedObjectType): TypeBrands {
 		}
 	};
 
-	visitObjectType(type);
+	visitType(type);
 	const allNames = Array.from(names.values()).sort();
 
+	if (type.kind === 'List' && type.elementType.kind !== 'Object') {
+		throw new Error('Expected list element type to be Object but found: ' + type.elementType.kind);
+	}
+
+	const objectType = type.kind === 'List' ? (type.elementType as T.FlattenedObjectType) : type;
+
 	const rootNames = new Set<string>();
-	if (type.objectKind === 'Single') {
-		type.schemaTypes.forEach(t => rootNames.add(t.name));
+	if (objectType.objectKind === 'Single') {
+		objectType.schemaTypes.forEach(t => rootNames.add(t.name));
 	} else {
-		type.fragmentSpreads.forEach(s => {
+		objectType.fragmentSpreads.forEach(s => {
 			if (s.kind === 'SpecificObject') {
 				rootNames.add(s.schemaType.name);
 			} else {

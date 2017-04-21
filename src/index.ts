@@ -6,7 +6,7 @@ import { mapMultiFragmentType } from './MultiFragmentMapper';
 import { mapOperationType } from './OperationMapper';
 import { printType } from './Printer';
 import { decorateTypeWithTypeBrands, decorateWithTypeBrands, getTypeBrandNames } from './TypeBrandDecorator';
-import { normalizeType } from './TypeNormalizer';
+import { normalizeListType, normalizeType } from './TypeNormalizer';
 import * as T from './Types';
 import {
 	validateMultiFragmentAST,
@@ -17,10 +17,14 @@ export function getNormalizedAst(
 	schema: GraphQLSchema,
 	fragmentText: string,
 	fieldsToIgnore?: string[],
-): T.FlattenedObjectType {
+): T.FlattenedObjectType | T.FlattenedListType {
 	const gqlAst = parse(new Source(fragmentText));
 	const ast = mapFragmentType(schema, gqlAst, fieldsToIgnore);
-	return normalizeType(schema, ast);
+	if (ast.kind === 'Object') {
+		return normalizeType(schema, ast);
+	} else {
+		return normalizeListType(schema, ast);
+	}
 }
 
 export function getNormalizedMultiFragmentAst(
@@ -169,16 +173,16 @@ export function getOperationBrandedTypeWithNamesDefinition(
 }
 
 function getTypeBrandedTypeDefinition(
-	normalizedAst: T.FlattenedObjectType,
+	normalizedAst: T.FlattenedObjectType | T.FlattenedListType,
 	withNames: boolean,
 	indentSpaces?: number,
 ): BrandedTypeResult {
-	const brandedAst = decorateWithTypeBrands(normalizedAst);
+	const brandedAst = decorateTypeWithTypeBrands(normalizedAst) as T.FlattenedObjectType | T.FlattenedListType;
 
 	const names = getTypeBrandNames(brandedAst);
 
 	const brandsToImport = names.allRequiredNames;
-	const fragmentTypeBrandText = getFragmentTypeBrandText(names.fragmentTypeNames);
+	const fragmentTypeBrandText = getFragmentTypeBrandText(names.fragmentTypeNames, brandedAst.kind === 'List');
 
 	const typeText = printType(false, brandedAst, withNames, indentSpaces);
 
@@ -189,9 +193,12 @@ function getTypeBrandedTypeDefinition(
 	};
 }
 
-function getFragmentTypeBrandText(names: string[], indentSpaces?: number): string {
+function getFragmentTypeBrandText(names: string[], plural: boolean, indentSpaces?: number): string {
 	if (indentSpaces == null) {
 		indentSpaces = 0;
+	}
+	if (plural) {
+		return '(' + getFragmentTypeBrandText(names, false, indentSpaces) + ' | null)[]';
 	}
 	return `{
 ${' '.repeat(indentSpaces + 2)}'': ${names.join(' | ')};
@@ -199,7 +206,7 @@ ${' '.repeat(indentSpaces)}}`;
 }
 
 function getNamedTypeBrandedTypeDefinitions(
-	normalizedAst: T.FlattenedObjectType,
+	normalizedAst: T.FlattenedObjectType | T.FlattenedListType,
 	indentSpaces?: number,
 ): NamedBrandedTypeResult {
 	const res = getTypeBrandedTypeDefinition(normalizedAst, true, indentSpaces);

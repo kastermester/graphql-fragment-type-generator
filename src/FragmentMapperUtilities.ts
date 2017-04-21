@@ -1,5 +1,6 @@
 import {
 	DirectiveLocation,
+	FragmentDefinitionNode,
 	GraphQLDirective,
 	GraphQLEnumType,
 	GraphQLList,
@@ -90,4 +91,23 @@ export function transformType(type: GraphQLOutputType): {
 		fragmentType: fragmentType,
 		leafType: leafType,
 	};
+}
+
+export function isPluralFragmentDefinition(fragmentDefinition: FragmentDefinitionNode): boolean {
+	if (fragmentDefinition.directives == null) {
+		return false;
+	}
+
+	const relayDirective = fragmentDefinition.directives.find(v => v.name.value === 'relay');
+
+	if (relayDirective == null || relayDirective.arguments == null) {
+		return false;
+	}
+	const pluralArg = relayDirective.arguments.find(v => v.name.value === 'plural');
+
+	if (pluralArg == null) {
+		return false;
+	}
+
+	return pluralArg.value.kind === 'BooleanValue' && pluralArg.value.value;
 }

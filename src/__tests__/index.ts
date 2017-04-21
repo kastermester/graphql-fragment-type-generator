@@ -44,6 +44,31 @@ test('Should print type definition on valid input', () => {
 	expect(result).toEqual(expected);
 });
 
+test('Should print type definition on valid input (plural)', () => {
+	const text = 'fragment P on Planet @relay(plural: true) { name }';
+
+	const result = getFragmentTextBrandedTypeDefinition(schema, text);
+
+	const fragmentText = `({
+  '': Planet;
+
+  /**
+   * The name of this planet.
+   */
+  name: string | null;
+} | null)[]`;
+	const brandsToImport = ['Planet'];
+	const brandText = `({
+  '': Planet;
+} | null)[]`;
+	const expected: typeof result = {
+		brandsToImport: brandsToImport,
+		fragmentTypeBrandText: brandText,
+		fragmentTypeText: fragmentText,
+	};
+	expect(result).toEqual(expected);
+});
+
 test('Should print as big union when querying interface type', () => {
 	const text = 'fragment N on Node { id }';
 

@@ -112,6 +112,18 @@ function flattenFragmentSpread(
 }
 
 export function normalizeType(schema: GraphQLSchema, type: T.ObjectType): T.FlattenedObjectType {
+	return normalizeObjectType(schema, type);
+}
+
+export function normalizeListType(schema: GraphQLSchema, type: T.ListType): T.FlattenedListType {
+	return {
+		elementType: normalizeWrappedType(schema, type.elementType),
+		kind: 'List',
+		schemaType: type.schemaType,
+	};
+}
+
+function normalizeObjectType(schema: GraphQLSchema, type: T.ObjectType): T.FlattenedObjectType {
 	const possibleTypes = sortBy(possibleTypesForType(schema, type.schemaType), (t) => t.name);
 	const fields = type.fields.map(f => {
 		return {
