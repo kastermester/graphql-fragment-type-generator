@@ -25,6 +25,7 @@ export function mapMultiFragmentType(
 	ast: DocumentNode,
 	rootFragmentName: string,
 	removeFieldsNamed?: string[],
+	allowUndefinedFragmentSpread: boolean = false,
 ): T.ObjectType {
 	const schemaWithDirective = mapSchema(schema);
 	const errors = validateMultiFragmentAST(schema, ast, rootFragmentName);
@@ -45,6 +46,7 @@ export function mapMultiFragmentType(
 		ast,
 		fragmentNode,
 		removeFieldsNamed,
+		allowUndefinedFragmentSpread,
 	);
 }
 
@@ -71,6 +73,7 @@ export function mapType(
 	ast: DocumentNode,
 	rootNode: FragmentDefinitionNode | OperationDefinitionNode,
 	removeFieldsNamed?: string[],
+	allowUndefinedFragmentSpread: boolean = false,
 ): T.ObjectType {
 	const ignoredNames = removeFieldsNamed == null ? new Set<string>() : new Set<string>(removeFieldsNamed);
 	const fragmentDefinitions = ast.definitions.reduce((carry, d) => {
@@ -140,7 +143,16 @@ export function mapType(
 			},
 			FragmentSpread: {
 				enter(fragmentSpread: FragmentSpreadNode) {
-					const objectType = getFragmentType(fragmentSpread.name.value);
+					let objectType: T.ObjectType;
+					if (allowUndefinedFragmentSpread) {
+						const type = getOptionalFragmentType(fragmentSpread.name.value);
+						if (type == null) {
+							return;
+						}
+						objectType = type;
+					} else {
+						objectType = getFragmentType(fragmentSpread.name.value);
+					}
 					const currentType = getCurrentType();
 					currentType.fragmentSpreads.push(objectType);
 				},
@@ -165,9 +177,18 @@ export function mapType(
 	};
 
 	const getFragmentType = (name: string): T.ObjectType => {
+		const fragmentType = getOptionalFragmentType(name);
+		if (fragmentType == null) {
+			throw new Error('Fragment with name: ' + name + ' could not be found');
+		}
+
+		return fragmentType;
+	};
+
+	const getOptionalFragmentType = (name: string): T.ObjectType | null => {
 		const fragmentDefinition = fragmentDefinitions[name];
 		if (fragmentDefinition == null) {
-			throw new Error('Fragment with name: ' + name + ' could not be found');
+			return null;
 		}
 
 		const cached = fragmentDefinitionCache[name];

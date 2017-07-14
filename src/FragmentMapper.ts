@@ -28,7 +28,13 @@ export function mapFragmentType(
 
 	const plural = isPluralFragmentDefinition(fragmentDefinition);
 
-	const singularType = mapType(schema, ast, fragmentDefinition, removeFieldsNamed);
+	const singularType = mapType(
+		schema,
+		ast,
+		fragmentDefinition,
+		removeFieldsNamed,
+		/* allow unreferenced fragments */ true,
+	);
 
 	if (plural) {
 		return {

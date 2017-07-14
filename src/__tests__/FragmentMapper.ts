@@ -60,6 +60,32 @@ test('Can map super simple fragment', () => {
 	expect(mapped).toEqual(expected);
 });
 
+test('Can map super simple fragment - with undefined other fragment', () => {
+	const ast = textToAST('fragment P on Planet { name ... OtherFragment }');
+
+	const mapped = mapFragmentType(schema, ast);
+
+	const expected: typeof mapped = {
+		fields: [
+			{
+				exportName: null,
+				fieldName: 'name',
+				resultFieldName: 'name',
+				schemaType: GraphQLString,
+				type: {
+					kind: 'Scalar',
+					knownPossibleValues: null,
+					schemaType: GraphQLString,
+				},
+			},
+		],
+		fragmentSpreads: [],
+		kind: 'Object',
+		schemaType: schema.getType('Planet') as GraphQLObjectType,
+	};
+	expect(mapped).toEqual(expected);
+});
+
 test('Can map super simple plural fragment', () => {
 	const ast = textToAST('fragment P on Planet @relay(plural: true) { name }');
 
