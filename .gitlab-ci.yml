@@ -1,5 +1,5 @@
 ---
-image: docker.input-output.dk/docker/nodejs:7.5.0
+image: eu.gcr.io/io-img/nodejs:7.5.0
 
 stages:
   - prepare
@@ -22,7 +22,7 @@ yarn:install:
 
 test:nodejs:7.5.0:
   stage: verify
-  image: docker.input-output.dk/docker/nodejs:7.5.0
+  image: eu.gcr.io/io-img/nodejs:7.5.0
   dependencies:
     - yarn:install
   script:
@@ -32,7 +32,7 @@ test:nodejs:7.5.0:
 
 test:nodejs:6.9.5:
   stage: verify
-  image: docker.input-output.dk/docker/nodejs:6.9.5
+  image: eu.gcr.io/io-img/nodejs:6.9.5
   dependencies:
     - yarn:install
   script:
@@ -42,7 +42,7 @@ test:nodejs:6.9.5:
 
 test:nodejs:4.7.3:
   stage: verify
-  image: docker.input-output.dk/docker/nodejs:4.7.3
+  image: eu.gcr.io/io-img/nodejs:4.7.3
   dependencies:
     - yarn:install
   script:
@@ -72,7 +72,7 @@ build:
     - kubernetes
 
 pages:
-  image: docker.input-output.dk/docker/nodejs:7.5.0
+  image: eu.gcr.io/io-img/nodejs:7.5.0
   cache:
     paths:
       - docs/node_modules
