@@ -40,16 +40,6 @@ test:nodejs:6.9.5:
   tags:
     - kubernetes
 
-test:nodejs:4.7.3:
-  stage: verify
-  image: eu.gcr.io/io-img/nodejs:4.7.3
-  dependencies:
-    - yarn:install
-  script:
-    - yarn test
-  tags:
-    - kubernetes
-
 lint:
   stage: verify
   dependencies:
