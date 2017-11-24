@@ -7,7 +7,7 @@
     "test": "jest --coverage",
     "lint": "tslint --project tsconfig.json src/*.ts src/**/*.ts",
     "build": "rm -rf lib && tsc -p tsconfig-build.json",
-    "prepublish": "npm test && npm run lint && npm run build"
+    "prepublishOnly": "npm test && npm run lint && npm run build"
   },
   "author": "",
   "license": "ISC",
