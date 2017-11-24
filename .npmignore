@@ -2,7 +2,12 @@ src/
 types/
 docs/
 coverage/
+.npmignore
+.prettierrc
 .vscode/
+*.log
+*.tgz
+jest.config.js
 tsconfig-build.json
 tsconfig-test.json
 tsconfig.json
