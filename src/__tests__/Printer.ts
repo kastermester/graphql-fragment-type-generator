@@ -6,14 +6,17 @@ import {
 	GraphQLInt,
 	GraphQLInterfaceType,
 	GraphQLID,
+	GraphQLList,
 	GraphQLNonNull,
 	GraphQLObjectType,
 	GraphQLString,
+	GraphQLUnionType,
+	Kind,
 	Source,
 } from 'graphql';
 import * as path from 'path';
-import { printType } from '../Printer';
-import { FlattenedObjectType } from '../Types';
+import { printFlattedObjectType, printType } from '../Printer';
+import { FlattenedListType, FlattenedObjectType, FlattenedType } from '../Types';
 import { validateSingleFragmentAST } from '../Validator';
 
 const schema = buildClientSchema(JSON.parse(fs.readFileSync(path.resolve(__dirname, 'schema.json'), 'utf-8')).data);
@@ -627,5 +630,97 @@ test('Can print branded types', () => {
 } | {
   '': Vehicle;
 }`;
+	expect(printed).toBe(expected);
+});
+
+test('encapsulation of ({comlex} | {union type})[] lists with parens', () => {
+	const type = {
+		elementType: {
+			kind: 'NonNull',
+			nullableType: {
+				fragmentSpreads: [
+					{
+						fields: [
+							{
+								deprecationReason: null,
+								description: null,
+								exportName: null,
+								fieldName: '',
+								resultFieldName: '',
+								schemaType: new GraphQLNonNull(GraphQLString),
+								type: {
+									kind: 'NonNull',
+									nullableType: {
+										kind: 'Reference',
+										names: ['Film'],
+									},
+									schemaType: new GraphQLNonNull(GraphQLString),
+								},
+							},
+						],
+						kind: 'RestObject',
+						schemaTypes: [schema.getType('Film') as GraphQLObjectType],
+					},
+					{
+						fields: [
+							{
+								deprecationReason: null,
+								description: null,
+								exportName: null,
+								fieldName: '',
+								resultFieldName: '',
+								schemaType: new GraphQLNonNull(GraphQLString),
+								type: {
+									kind: 'NonNull',
+									nullableType: {
+										kind: 'Reference',
+										names: ['Person'],
+									},
+									schemaType: new GraphQLNonNull(GraphQLString),
+								},
+							},
+						],
+						kind: 'RestObject',
+						schemaTypes: [schema.getType('Person') as GraphQLObjectType],
+					},
+				],
+				kind: 'Object',
+				objectKind: 'Spread',
+				schemaTypes: [
+					schema.getType('Film') as GraphQLObjectType,
+					schema.getType('Person') as GraphQLObjectType,
+				],
+			},
+			schemaType: new GraphQLNonNull(GraphQLString),
+		},
+		kind: 'List',
+		schemaType: new GraphQLNonNull(GraphQLString),
+	} as FlattenedListType;
+
+	const printed = printType(false, type, false);
+	const expected = `({
+    '': Film;
+  } | {
+    '': Person;
+  })[]`;
+	expect(printed).toBe(expected);
+});
+
+test('encapsulation of multiple reference types list', () => {
+	const type = {
+		elementType: {
+			kind: 'NonNull',
+			nullableType: {
+				kind: 'Reference',
+				names: ['Film', 'Person'],
+			},
+			schemaType: new GraphQLNonNull(GraphQLString),
+		},
+		kind: 'List',
+		schemaType: new GraphQLNonNull(GraphQLString),
+	} as FlattenedListType;
+
+	const printed = printType(false, type, false);
+	const expected = '(Film | Person)[]';
 	expect(printed).toBe(expected);
 });

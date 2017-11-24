@@ -244,8 +244,8 @@ function isParenAroundTypeNeeded(type: T.FlattenedType): boolean {
 		return true;
 	}
 	if (innerType.kind === 'Object') {
-		return innerType.objectKind === 'Single' || innerType.fragmentSpreads.length === 1;
+		return innerType.objectKind !== 'Single' && innerType.fragmentSpreads.length > 1;
 	}
 
-	return innerType.names.length === 1;
+	return innerType.names.length > 1;
 }
