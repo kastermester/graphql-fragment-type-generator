@@ -12,22 +12,6 @@
   },
   "author": "",
   "license": "ISC",
-  "jest": {
-    "rootDir": "src",
-    "globals": {
-      "__TS_CONFIG__": "./tsconfig-test.json"
-    },
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/../node_modules/ts-jest/preprocessor.js"
-    },
-    "testEnvironment": "node",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ]
-  },
   "dependencies": {
     "aggregate-error": "^1.0.0"
   },
