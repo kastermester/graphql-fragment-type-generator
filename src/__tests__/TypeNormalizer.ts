@@ -253,9 +253,9 @@ test('Can normalize multiple inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description:
-						'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
-						'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
-						'episode IV: A New Hope.',
+							'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
+							'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
+							'episode IV: A New Hope.',
 						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
@@ -269,8 +269,8 @@ test('Can normalize multiple inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description:
-						'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
-						'if the person does not have a gender.',
+							'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
+							'if the person does not have a gender.',
 						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
@@ -443,9 +443,9 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description:
-						'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
-						'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
-						'episode IV: A New Hope.',
+							'The birth year of the person, using the in-universe standard of BBY or ABY -\nBefore the Battle of ' +
+							'Yavin or After the Battle of Yavin. The Battle of Yavin is\na battle that occurs at the end of Star Wars ' +
+							'episode IV: A New Hope.',
 						exportName: null,
 						fieldName: 'birthYear',
 						resultFieldName: 'birthYear',
@@ -459,8 +459,8 @@ test('Can normalize mixes between field selections and fragments', () => {
 					{
 						deprecationReason: null,
 						description:
-						'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
-						'if the person does not have a gender.',
+							'The gender of this person. Either "Male", "Female" or "unknown",\n"n/a" ' +
+							'if the person does not have a gender.',
 						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',

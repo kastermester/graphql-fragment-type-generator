@@ -1,9 +1,4 @@
-import {
-	GraphQLBoolean,
-	GraphQLFloat,
-	GraphQLInt,
-	GraphQLScalarType,
-} from 'graphql';
+import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLScalarType } from 'graphql';
 import * as T from './Types';
 // tslint:disable:no-console
 
@@ -57,8 +52,7 @@ function flattenedObjecTypeOrNull(type: T.FlattenedType): T.FlattenedObjectType 
 function printObjectTypeFields(type: T.ObjectType, indentLevel: number): void {
 	const indents = indent(indentLevel);
 	for (const field of type.fields) {
-		const alias = (field.resultFieldName !== field.fieldName) ?
-			`${field.resultFieldName}: ` : '';
+		const alias = field.resultFieldName !== field.fieldName ? `${field.resultFieldName}: ` : '';
 		const objectType = objecTypeOrNull(field.type);
 
 		if (objectType != null) {
@@ -85,8 +79,7 @@ function printFlattenedObjectTypeFields(type: T.FlattenedObjectType, indentLevel
 	const indents = indent(indentLevel);
 	if (type.objectKind === 'Single') {
 		for (const field of type.fields) {
-			const alias = (field.resultFieldName !== field.fieldName) ?
-				`${field.resultFieldName}: ` : '';
+			const alias = field.resultFieldName !== field.fieldName ? `${field.resultFieldName}: ` : '';
 			const objectType = flattenedObjecTypeOrNull(field.type);
 
 			if (objectType != null) {
@@ -108,8 +101,7 @@ function printFlattenedObjectTypeFields(type: T.FlattenedObjectType, indentLevel
 function printSpecificObjectTypeFields(type: T.FlattenedSpreadType, indentLevel: number): void {
 	const indents = indent(indentLevel);
 	for (const field of type.fields) {
-		const alias = (field.resultFieldName !== field.fieldName) ?
-			`${field.resultFieldName}: ` : '';
+		const alias = field.resultFieldName !== field.fieldName ? `${field.resultFieldName}: ` : '';
 		const objectType = flattenedObjecTypeOrNull(field.type);
 
 		if (objectType != null) {
@@ -131,9 +123,10 @@ function printFlattenedFragments(fragments: T.FlattenedSpreadType[], indentLevel
 			console.log(`${indents}|`);
 		}
 		first = false;
-		const types = fragment.kind === 'SpecificObject' ?
-			fragment.schemaType.name :
-			fragment.schemaTypes.map(t => t.name).join(' | ');
+		const types =
+			fragment.kind === 'SpecificObject'
+				? fragment.schemaType.name
+				: fragment.schemaTypes.map(t => t.name).join(' | ');
 		console.log(`${indents}... on ${types} {`);
 		printSpecificObjectTypeFields(fragment, indentLevel + 2);
 		console.log(`${indents}}`);
@@ -151,12 +144,7 @@ function scalarTypeToTSType(type: GraphQLScalarType): string {
 	return 'string';
 }
 
-export function printType(
-	nullable: boolean,
-	type: T.FlattenedType,
-	withNames: boolean,
-	indentLevel?: number,
-): string {
+export function printType(nullable: boolean, type: T.FlattenedType, withNames: boolean, indentLevel?: number): string {
 	indentLevel = indentLevel != null ? indentLevel : 0;
 	const wrap = (t: string) => {
 		if (!nullable) {
@@ -180,11 +168,7 @@ export function printType(
 		case 'List': {
 			const complexElementType = isParenAroundTypeNeeded(type.elementType);
 			const elementType = printType(true, type.elementType, withNames, indentLevel);
-			return wrap(
-				complexElementType ?
-					`(${elementType})[]` :
-					`${elementType}[]`,
-			);
+			return wrap(complexElementType ? `(${elementType})[]` : `${elementType}[]`);
 		}
 		case 'Object': {
 			const nullableWrapper = nullable ? ' | null' : '';
@@ -212,9 +196,10 @@ export function printType(
 						buffer.push(`${indents}   */`);
 					}
 
-					const typeDef = withNames && f.exportName != null ? (
-						f.type.kind === 'NonNull' ? f.exportName : `${f.exportName} | null`
-					) : printType(true, f.type, withNames, i + 4);
+					const typeDef =
+						withNames && f.exportName != null
+							? f.type.kind === 'NonNull' ? f.exportName : `${f.exportName} | null`
+							: printType(true, f.type, withNames, i + 4);
 					buffer.push(`${indents + '  '}${fieldName}: ${typeDef};`);
 					if (idx < fields.length - 1) {
 						buffer.push('');
@@ -227,7 +212,7 @@ export function printType(
 				return printFields(type.fields, indentLevel) + nullableWrapper;
 			} else {
 				const buffer: string[] = [];
-				type.fragmentSpreads.forEach((spread) => {
+				type.fragmentSpreads.forEach(spread => {
 					buffer.push(printFields(spread.fields, indentLevel as number));
 				});
 				const indents = ' '.repeat(indentLevel);

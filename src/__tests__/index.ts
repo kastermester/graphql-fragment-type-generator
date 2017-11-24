@@ -259,12 +259,7 @@ test('Should recurse down into connection fields with type brands', () => {
 }`;
 
 	expect(result.fragmentTypeText).toEqual(fragmentText);
-	expect(result.brandsToImport).toEqual([
-		'Person',
-		'Planet',
-		'PlanetResidentsConnection',
-		'PlanetResidentsEdge',
-	]);
+	expect(result.brandsToImport).toEqual(['Person', 'Planet', 'PlanetResidentsConnection', 'PlanetResidentsEdge']);
 	const brandedType = `{
   '': Planet;
 }`;

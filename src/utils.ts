@@ -12,14 +12,11 @@ export function sortBy<T, TProp>(arr: T[], property: (item: T) => TProp): T[] {
 	});
 }
 
-export function uniqueBy<T, TUniqueVal>(
-	arr: T[],
-	uniqueKeySelector: (item: T) => TUniqueVal,
-): T[] {
+export function uniqueBy<T, TUniqueVal>(arr: T[], uniqueKeySelector: (item: T) => TUniqueVal): T[] {
 	const uniqueValues = new Set();
 	const res: T[] = [];
 
-	arr.forEach((v) => {
+	arr.forEach(v => {
 		const key = uniqueKeySelector(v);
 		if (uniqueValues.has(key)) {
 			return;
@@ -34,10 +31,11 @@ export function uniqueBy<T, TUniqueVal>(
 export function groupBy<T, TKey, TValue>(
 	arr: T[],
 	keySelector: (item: T) => TKey,
-	valueSelector: (item: T) => TValue): Map<TKey, TValue[]> {
+	valueSelector: (item: T) => TValue,
+): Map<TKey, TValue[]> {
 	const res = new Map();
 
-	arr.forEach((v) => {
+	arr.forEach(v => {
 		const key = keySelector(v);
 		let entry = res.get(key);
 		if (entry == null) {

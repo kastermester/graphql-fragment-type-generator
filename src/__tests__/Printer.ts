@@ -161,8 +161,8 @@ test('Can print multiple inline fragment spreads', () => {
 					{
 						deprecationReason: null,
 						description:
-						'The gender of this person. Either "Male", "Female" or "unknown",\n' +
-						'"n/a" if the person does not have a gender.',
+							'The gender of this person. Either "Male", "Female" or "unknown",\n' +
+							'"n/a" if the person does not have a gender.',
 						exportName: null,
 						fieldName: 'gender',
 						resultFieldName: 'gender',
@@ -473,9 +473,7 @@ test('Can print branded types', () => {
 					},
 				],
 				kind: 'RestObject',
-				schemaTypes: [
-					schema.getType('Film') as GraphQLObjectType,
-				],
+				schemaTypes: [schema.getType('Film') as GraphQLObjectType],
 			},
 			{
 				fields: [
@@ -497,9 +495,7 @@ test('Can print branded types', () => {
 					},
 				],
 				kind: 'RestObject',
-				schemaTypes: [
-					schema.getType('Person') as GraphQLObjectType,
-				],
+				schemaTypes: [schema.getType('Person') as GraphQLObjectType],
 			},
 			{
 				fields: [
@@ -556,9 +552,7 @@ test('Can print branded types', () => {
 					},
 				],
 				kind: 'RestObject',
-				schemaTypes: [
-					schema.getType('Species') as GraphQLObjectType,
-				],
+				schemaTypes: [schema.getType('Species') as GraphQLObjectType],
 			},
 			{
 				fields: [
@@ -580,9 +574,7 @@ test('Can print branded types', () => {
 					},
 				],
 				kind: 'RestObject',
-				schemaTypes: [
-					schema.getType('Starship') as GraphQLObjectType,
-				],
+				schemaTypes: [schema.getType('Starship') as GraphQLObjectType],
 			},
 			{
 				fields: [
@@ -604,9 +596,7 @@ test('Can print branded types', () => {
 					},
 				],
 				kind: 'RestObject',
-				schemaTypes: [
-					schema.getType('Vehicle') as GraphQLObjectType,
-				],
+				schemaTypes: [schema.getType('Vehicle') as GraphQLObjectType],
 			},
 		],
 		kind: 'Object',

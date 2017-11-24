@@ -41,13 +41,7 @@ export function mapMultiFragmentType(
 	if (fragmentNode == null) {
 		throw new Error('Unable to find fragment named: ' + rootFragmentName);
 	}
-	return mapType(
-		schema,
-		ast,
-		fragmentNode,
-		removeFieldsNamed,
-		allowUndefinedFragmentSpread,
-	);
+	return mapType(schema, ast, fragmentNode, removeFieldsNamed, allowUndefinedFragmentSpread);
 }
 
 function getExportName(directives: DirectiveNode[] | undefined): string | null {
@@ -76,12 +70,15 @@ export function mapType(
 	allowUndefinedFragmentSpread: boolean = false,
 ): T.ObjectType {
 	const ignoredNames = removeFieldsNamed == null ? new Set<string>() : new Set<string>(removeFieldsNamed);
-	const fragmentDefinitions = ast.definitions.reduce((carry, d) => {
-		if (d.kind === 'FragmentDefinition') {
-			carry[d.name.value] = d;
-		}
-		return carry;
-	}, {} as { [fragmentName: string]: FragmentDefinitionNode });
+	const fragmentDefinitions = ast.definitions.reduce(
+		(carry, d) => {
+			if (d.kind === 'FragmentDefinition') {
+				carry[d.name.value] = d;
+			}
+			return carry;
+		},
+		{} as { [fragmentName: string]: FragmentDefinitionNode },
+	);
 
 	const fragmentDefinitionCache: { [fragmentName: string]: T.ObjectType } = {};
 	const visitor = (typeInfo: TypeInfo, stack: T.ObjectType[]) => {

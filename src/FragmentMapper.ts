@@ -1,10 +1,5 @@
 import * as AggregateError from 'aggregate-error';
-import {
-	DocumentNode,
-	FragmentDefinitionNode,
-	GraphQLList,
-	GraphQLSchema,
-} from 'graphql';
+import { DocumentNode, FragmentDefinitionNode, GraphQLList, GraphQLSchema } from 'graphql';
 import { isPluralFragmentDefinition, mapSchema } from './FragmentMapperUtilities';
 import { mapType } from './MultiFragmentMapper';
 import * as T from './Types';

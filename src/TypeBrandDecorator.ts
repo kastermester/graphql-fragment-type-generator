@@ -1,8 +1,5 @@
 import { GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import {
-	mapWithConstantTypeNameValues,
-	withMeta,
-} from './TypeNormalizer';
+import { mapWithConstantTypeNameValues, withMeta } from './TypeNormalizer';
 import * as T from './Types';
 import { sortBy } from './utils';
 
@@ -15,24 +12,22 @@ export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.Flattened
 	}
 
 	if (type.objectKind === 'Single') {
-		const spreadFields = type.schemaTypes.map(
-			(schemaType: GraphQLObjectType): T.FlattenedSpecificObjectType => {
-				return {
-					fields: decorateFieldsWithTypeBrands(
-						withMeta(
-							mapWithConstantTypeNameValues(sortBy(type.fields, s => s.resultFieldName), [schemaType], true),
-							schemaType,
-						),
+		const spreadFields = type.schemaTypes.map((schemaType: GraphQLObjectType): T.FlattenedSpecificObjectType => {
+			return {
+				fields: decorateFieldsWithTypeBrands(
+					withMeta(
+						mapWithConstantTypeNameValues(sortBy(type.fields, s => s.resultFieldName), [schemaType], true),
 						schemaType,
 					),
-					kind: 'SpecificObject',
-					schemaType: schemaType,
-				};
-			},
-		);
+					schemaType,
+				),
+				kind: 'SpecificObject',
+				schemaType: schemaType,
+			};
+		});
 		return {
 			fields: null,
-			fragmentSpreads: sortBy(spreadFields, (t) => t.schemaType.name),
+			fragmentSpreads: sortBy(spreadFields, t => t.schemaType.name),
 			kind: 'Object',
 			objectKind: 'Spread',
 			schemaTypes: type.schemaTypes,
@@ -50,10 +45,7 @@ export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.Flattened
 				for (const t of s.schemaTypes) {
 					carry.push({
 						fields: decorateFieldsWithTypeBrands(
-							withMeta(
-								mapWithConstantTypeNameValues(s.fields, [t], true),
-								t,
-							),
+							withMeta(mapWithConstantTypeNameValues(s.fields, [t], true), t),
 							t,
 						),
 						kind: 'SpecificObject',
@@ -68,13 +60,11 @@ export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.Flattened
 
 	return {
 		...type,
-		fragmentSpreads: sortBy(spreadFields, (t) => t.schemaType.name),
+		fragmentSpreads: sortBy(spreadFields, t => t.schemaType.name),
 	};
 }
 
-export function decorateTypeWithTypeBrands(
-	type: T.FlattenedType,
-): T.FlattenedType {
+export function decorateTypeWithTypeBrands(type: T.FlattenedType): T.FlattenedType {
 	if (type.kind === 'Object') {
 		return decorateWithTypeBrands(type);
 	}
@@ -117,7 +107,7 @@ function decorateFieldsWithTypeBrands(
 				schemaType: new GraphQLNonNull(GraphQLString),
 			},
 		},
-		...fields.map((f) => {
+		...fields.map(f => {
 			return {
 				...f,
 				type: decorateTypeWithTypeBrands(f.type),

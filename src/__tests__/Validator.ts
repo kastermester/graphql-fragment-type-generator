@@ -104,8 +104,6 @@ describe('Multi fragment', () => {
 		const errors = validateMultiFragmentAST(schema, doc, 'P');
 
 		expect(errors.length).toBe(1);
-		expect(errors[0].message).toBe(
-			'The following fragment were defined but never referenced: P2',
-		);
+		expect(errors[0].message).toBe('The following fragment were defined but never referenced: P2');
 	});
 });

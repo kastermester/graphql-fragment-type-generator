@@ -4,11 +4,7 @@ import { mapSchema } from './FragmentMapperUtilities';
 import { mapType } from './MultiFragmentMapper';
 import * as T from './Types';
 
-export function mapOperationType(
-	schema: GraphQLSchema,
-	ast: DocumentNode,
-	removeFieldsNamed?: string[],
-): T.ObjectType {
+export function mapOperationType(schema: GraphQLSchema, ast: DocumentNode, removeFieldsNamed?: string[]): T.ObjectType {
 	const schemaWithDirective = mapSchema(schema);
 	const errors = validate(schema, ast);
 	if (errors.length > 0) {

@@ -43,9 +43,16 @@ export function getInputObjectTypes(schema: GraphQLSchema): string {
 	const inputObjectDefinitions = inputObjectTypes.map(t => `export interface ${t.name} {\n${printFields(t)}\n}`);
 
 	const enumUnionTypes = enumTypes.map(
-		t => `export type ${t.name} = ${t.getValues().map(v => JSON.stringify(v.name)).join(' | ')};`,
+		t =>
+			`export type ${t.name} = ${t
+				.getValues()
+				.map(v => JSON.stringify(v.name))
+				.join(' | ')};`,
 	);
-	return inputObjectDefinitions.concat(enumUnionTypes).sort().join('\n\n');
+	return inputObjectDefinitions
+		.concat(enumUnionTypes)
+		.sort()
+		.join('\n\n');
 }
 
 function printFields(type: GraphQLInputObjectType): string {
@@ -53,17 +60,21 @@ function printFields(type: GraphQLInputObjectType): string {
 
 	const fields = type.getFields();
 
-	return Object.keys(fields).sort().map(fieldName => {
-		const fieldInfo = fields[fieldName];
-		const nullable = fieldInfo.defaultValue != null || !(fieldInfo.type instanceof GraphQLNonNull) ? '?' : '';
-		let comment = '';
-		if (fieldInfo.description != null && fieldInfo.description.length > 0) {
-			comment = `${indent}/**\n${indent} * ` +
-				fieldInfo.description.replace(/\n/g, `\n${indent} * `).replace(/\*\//g, '* /') +
-				`\n${indent} */\n`;
-		}
-		return `${comment}${indent}${fieldName}${nullable}: ${printType(true, fieldInfo.type)};`;
-	}).join('\n');
+	return Object.keys(fields)
+		.sort()
+		.map(fieldName => {
+			const fieldInfo = fields[fieldName];
+			const nullable = fieldInfo.defaultValue != null || !(fieldInfo.type instanceof GraphQLNonNull) ? '?' : '';
+			let comment = '';
+			if (fieldInfo.description != null && fieldInfo.description.length > 0) {
+				comment =
+					`${indent}/**\n${indent} * ` +
+					fieldInfo.description.replace(/\n/g, `\n${indent} * `).replace(/\*\//g, '* /') +
+					`\n${indent} */\n`;
+			}
+			return `${comment}${indent}${fieldName}${nullable}: ${printType(true, fieldInfo.type)};`;
+		})
+		.join('\n');
 }
 
 function printType(nullable: boolean, type: GraphQLInputType): string {

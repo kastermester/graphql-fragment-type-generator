@@ -64,7 +64,9 @@ function DocumentContainsSingleFragment(context: ValidationContext): any {
 	return {
 		Document(doc: DocumentNode) {
 			if (doc.definitions.length !== 1 || doc.definitions[0].kind !== 'FragmentDefinition') {
-				context.reportError(new GraphQLError('Expected the Document to contain only a single FragmentDefinition', [doc]));
+				context.reportError(
+					new GraphQLError('Expected the Document to contain only a single FragmentDefinition', [doc]),
+				);
 			}
 
 			return false;
@@ -130,7 +132,9 @@ function DocumentIsMultipleFragmentsWithRootNamed(rootFragmentName: string): any
 				if (referencedNames != null) {
 					referencedNames.forEach(n => {
 						if (n === rootFragmentName) {
-							context.reportError(new GraphQLError(`Reference to root fragment ${rootFragmentName} is disallowed.`));
+							context.reportError(
+								new GraphQLError(`Reference to root fragment ${rootFragmentName} is disallowed.`),
+							);
 						}
 						if (!fragmentNames.has(n)) {
 							unknownFragments.add(n);
@@ -146,7 +150,9 @@ function DocumentIsMultipleFragmentsWithRootNamed(rootFragmentName: string): any
 			if (unknownFragments.size > 0) {
 				context.reportError(
 					new GraphQLError(
-						`The following fragments were referenced but not defined: ${Array.from(unknownFragments.values()).join(', ')}`,
+						`The following fragments were referenced but not defined: ${Array.from(
+							unknownFragments.values(),
+						).join(', ')}`,
 					),
 				);
 			}

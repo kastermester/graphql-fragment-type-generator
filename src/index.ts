@@ -8,10 +8,7 @@ import { printType } from './Printer';
 import { decorateTypeWithTypeBrands, decorateWithTypeBrands, getTypeBrandNames } from './TypeBrandDecorator';
 import { normalizeListType, normalizeType } from './TypeNormalizer';
 import * as T from './Types';
-import {
-	validateMultiFragmentAST,
-	validateSingleFragmentAST,
-} from './Validator';
+import { validateMultiFragmentAST, validateSingleFragmentAST } from './Validator';
 
 export function getNormalizedAst(
 	schema: GraphQLSchema,

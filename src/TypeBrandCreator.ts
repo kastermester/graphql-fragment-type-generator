@@ -1,9 +1,4 @@
-import {
-	GraphQLNamedType,
-	GraphQLObjectType,
-	GraphQLSchema,
-	GraphQLUnionType,
-} from 'graphql';
+import { GraphQLNamedType, GraphQLObjectType, GraphQLSchema, GraphQLUnionType } from 'graphql';
 
 type TypeMap = {
 	[name: string]: GraphQLNamedType;
@@ -22,19 +17,16 @@ export function getTypeBrands(schema: GraphQLSchema): string {
 	for (const typeName of Object.keys(types)) {
 		const type = types[typeName];
 		if (type instanceof GraphQLObjectType) {
-			if (
-				type === rootType ||
-				type === mutationType ||
-				type === subscriptionType ||
-				type.name.startsWith('__')
-			) {
+			if (type === rootType || type === mutationType || type === subscriptionType || type.name.startsWith('__')) {
 				continue;
 			}
 			objectTypes.add(type);
 		}
 	}
 
-	const sortedNames = Array.from(objectTypes.values()).map(t => `export enum ${t.name} {};`).sort();
+	const sortedNames = Array.from(objectTypes.values())
+		.map(t => `export enum ${t.name} {};`)
+		.sort();
 
 	return sortedNames.join('\n');
 }
