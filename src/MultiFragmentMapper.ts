@@ -212,9 +212,14 @@ export function mapType(
 		const typeInfo = new TypeInfo(schema);
 		const rootStack: T.ObjectType[] = [];
 		const opName = rootNode.operation;
-		const rootType = opName === 'query' ?
-			schema.getQueryType() :
-			(opName === 'mutation' ? schema.getMutationType() : schema.getSubscriptionType());
+		const rootType =
+			opName === 'query'
+				? schema.getQueryType()
+				: opName === 'mutation' ? schema.getMutationType() : schema.getSubscriptionType();
+
+		if (rootType == null) {
+			throw new Error('Root type cannot be null or undefined');
+		}
 
 		const res: T.ObjectType = {
 			fields: [],

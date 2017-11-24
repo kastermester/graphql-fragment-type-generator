@@ -26,12 +26,13 @@ export const typeNameDirective = new GraphQLDirective({
 });
 
 export function mapSchema(schema: GraphQLSchema): GraphQLSchema {
-
+	const mutation = schema.getMutationType();
+	const subscription = schema.getSubscriptionType();
 	return new GraphQLSchema({
 		directives: [typeNameDirective],
-		mutation: schema.getMutationType(),
+		mutation: mutation == null ? undefined : mutation,
 		query: schema.getQueryType(),
-		subscription: schema.getSubscriptionType(),
+		subscription: subscription == null ? undefined : subscription,
 	});
 }
 
