@@ -5,16 +5,15 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "node2",
+			"type": "node",
 			"request": "launch",
-			"cwd": "${workspaceRoot}",
+			"protocol": "inspector",
+			"cwd": "${workspaceFolder}",
 			"name": "Debug jest tests",
-			"program": "${workspaceRoot}/node_modules/jest-cli/bin/jest.js",
+			"program": "${workspaceFolder}/node_modules/jest-cli/bin/jest.js",
 			"args": [
 				"--runInBand",
 				"--no-cache",
-				"--env",
-				"jest-environment-node-debug",
 				"${relativeFile}"
 			],
 			"env": {
