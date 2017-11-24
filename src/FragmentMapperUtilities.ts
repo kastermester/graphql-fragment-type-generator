@@ -43,13 +43,13 @@ export function transformType(
 	fragmentType: T.FragmentType;
 } {
 	let leafGraphQLType = type;
-	const transformType: ((innerType: T.FragmentType) => T.FragmentType)[] = [];
+	const transformTypes: ((innerType: T.FragmentType) => T.FragmentType)[] = [];
 	let isScalarType = false;
 	let knownValues = null;
 	while (true) {
 		const currentType = leafGraphQLType;
 		if (currentType instanceof GraphQLNonNull) {
-			transformType.push(innerType => ({
+			transformTypes.push(innerType => ({
 				kind: 'NonNull',
 				nullableType: innerType as T.NullableFragmentType,
 				schemaType: currentType,
@@ -58,7 +58,7 @@ export function transformType(
 			continue;
 		}
 		if (currentType instanceof GraphQLList) {
-			transformType.push(innerType => ({
+			transformTypes.push(innerType => ({
 				elementType: innerType,
 				kind: 'List',
 				schemaType: currentType,
@@ -88,7 +88,9 @@ export function transformType(
 				knownPossibleValues: knownValues,
 				schemaType: leafGraphQLType as GraphQLScalarType,
 			};
-	const fragmentType = transformType.reverse().reduce((t, transformer) => transformer(t), leafType as T.FragmentType);
+	const fragmentType = transformTypes
+		.reverse()
+		.reduce((t, transformer) => transformer(t), leafType as T.FragmentType);
 	return {
 		fragmentType: fragmentType,
 		leafType: leafType,

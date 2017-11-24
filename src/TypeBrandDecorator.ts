@@ -12,22 +12,28 @@ export function decorateWithTypeBrands(type: T.FlattenedObjectType): T.Flattened
 	}
 
 	if (type.objectKind === 'Single') {
-		const spreadFields = type.schemaTypes.map((schemaType: GraphQLObjectType): T.FlattenedSpecificObjectType => {
-			return {
-				fields: decorateFieldsWithTypeBrands(
-					withMeta(
-						mapWithConstantTypeNameValues(sortBy(type.fields, s => s.resultFieldName), [schemaType], true),
+		const schemaSpreadFields = type.schemaTypes.map(
+			(schemaType: GraphQLObjectType): T.FlattenedSpecificObjectType => {
+				return {
+					fields: decorateFieldsWithTypeBrands(
+						withMeta(
+							mapWithConstantTypeNameValues(
+								sortBy(type.fields, s => s.resultFieldName),
+								[schemaType],
+								true,
+							),
+							schemaType,
+						),
 						schemaType,
 					),
-					schemaType,
-				),
-				kind: 'SpecificObject',
-				schemaType: schemaType,
-			};
-		});
+					kind: 'SpecificObject',
+					schemaType: schemaType,
+				};
+			},
+		);
 		return {
 			fields: null,
-			fragmentSpreads: sortBy(spreadFields, t => t.schemaType.name),
+			fragmentSpreads: sortBy(schemaSpreadFields, t => t.schemaType.name),
 			kind: 'Object',
 			objectKind: 'Spread',
 			schemaTypes: type.schemaTypes,
@@ -141,13 +147,13 @@ export function getTypeBrandNames(type: T.FlattenedObjectType | T.FlattenedListT
 		}
 	};
 
-	const visitObjectType = (objectType: T.FlattenedObjectType) => {
-		if (objectType.objectKind === 'Single') {
-			objectType.schemaTypes.forEach(t => names.add(t.name));
-			visitFields(objectType.fields);
+	const visitObjectType = (flattenedObjectType: T.FlattenedObjectType) => {
+		if (flattenedObjectType.objectKind === 'Single') {
+			flattenedObjectType.schemaTypes.forEach(t => names.add(t.name));
+			visitFields(flattenedObjectType.fields);
 			return;
 		}
-		for (const spread of objectType.fragmentSpreads) {
+		for (const spread of flattenedObjectType.fragmentSpreads) {
 			if (spread.kind === 'SpecificObject') {
 				names.add(spread.schemaType.name);
 			} else {

@@ -1,8 +1,8 @@
 import { GraphQLNamedType, GraphQLObjectType, GraphQLSchema, GraphQLUnionType } from 'graphql';
 
-type TypeMap = {
+interface TypeMap {
 	[name: string]: GraphQLNamedType;
-};
+}
 
 export function getTypeBrands(schema: GraphQLSchema): string {
 	const queryType = schema.getQueryType();

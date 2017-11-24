@@ -14,9 +14,9 @@ import {
 	GraphQLString,
 } from 'graphql';
 
-type TypeMap = {
+interface TypeMap {
 	[name: string]: GraphQLNamedType;
-};
+}
 
 export function getInputObjectTypes(schema: GraphQLSchema): string {
 	const inputObjectTypes = [];

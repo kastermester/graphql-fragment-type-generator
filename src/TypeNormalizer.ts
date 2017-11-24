@@ -72,7 +72,7 @@ function flattenFragmentSpread(
 				);
 				const innerFragmentSpreads = flattenFragmentSpread(schema, s, possibleSpreadTypes);
 				innerFragmentSpreads.forEach(t => carry.push(t));
-				const fields = s.fields.map(f => ({
+				const spreadFields = s.fields.map(f => ({
 					exportName: f.exportName,
 					fieldName: f.fieldName,
 					resultFieldName: f.resultFieldName,
@@ -81,7 +81,7 @@ function flattenFragmentSpread(
 				}));
 				for (const t of possibleInnerSpreadTypes) {
 					carry.push({
-						fields: withMeta(mapWithConstantTypeNameValues(fields, t, false), t),
+						fields: withMeta(mapWithConstantTypeNameValues(spreadFields, t, false), t),
 						kind: 'SpecificObject',
 						schemaType: t,
 					});
