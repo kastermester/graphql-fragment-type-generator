@@ -28,11 +28,13 @@ export const typeNameDirective = new GraphQLDirective({
 export function mapSchema(schema: GraphQLSchema): GraphQLSchema {
 	const mutation = schema.getMutationType();
 	const subscription = schema.getSubscriptionType();
+	const typeMap = schema.getTypeMap();
 	return new GraphQLSchema({
-		directives: [typeNameDirective],
+		directives: [typeNameDirective, ...schema.getDirectives()],
 		mutation: mutation == null ? undefined : mutation,
 		query: schema.getQueryType(),
 		subscription: subscription == null ? undefined : subscription,
+		types: Object.keys(typeMap).map(typeName => typeMap[typeName]),
 	});
 }
 
