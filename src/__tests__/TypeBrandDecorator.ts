@@ -68,6 +68,24 @@ test('Can decorate super simple fragment', () => {
 		      "deprecationReason": null,
 		      "description": null,
 		      "exportName": null,
+		      "fieldName": " $fragmentRefs",
+		      "resultFieldName": " $fragmentRefs",
+		      "schemaType": "String!",
+		      "type": Object {
+		        "kind": "NonNull",
+		        "nullableType": Object {
+		          "kind": "Reference",
+		          "names": Array [
+		            "any",
+		          ],
+		        },
+		        "schemaType": "String!",
+		      },
+		    },
+		    Object {
+		      "deprecationReason": null,
+		      "description": null,
+		      "exportName": null,
 		      "fieldName": "name",
 		      "resultFieldName": "name",
 		      "schemaType": "String",
@@ -88,15 +106,15 @@ test('Can decorate super simple fragment', () => {
 	`);
 	const brandNames = getTypeBrandNames(type);
 	expect(brandNames).toMatchInlineSnapshot(`
-				Object {
-				  "allRequiredNames": Array [
-				    "Planet",
-				  ],
-				  "fragmentTypeNames": Array [
-				    "Planet",
-				  ],
-				}
-		`);
+						Object {
+						  "allRequiredNames": Array [
+						    "Planet",
+						  ],
+						  "fragmentTypeNames": Array [
+						    "Planet",
+						  ],
+						}
+			`);
 });
 
 test('Can decorate inline fragment spreads', () => {
@@ -170,6 +188,24 @@ test('Can decorate inline fragment spreads', () => {
 		            "schemaType": "String!",
 		          },
 		        },
+		        Object {
+		          "deprecationReason": null,
+		          "description": null,
+		          "exportName": null,
+		          "fieldName": " $fragmentRefs",
+		          "resultFieldName": " $fragmentRefs",
+		          "schemaType": "String!",
+		          "type": Object {
+		            "kind": "NonNull",
+		            "nullableType": Object {
+		              "kind": "Reference",
+		              "names": Array [
+		                "any",
+		              ],
+		            },
+		            "schemaType": "String!",
+		          },
+		        },
 		      ],
 		      "kind": "SpecificObject",
 		      "schemaType": "Film",
@@ -194,6 +230,24 @@ test('Can decorate inline fragment spreads', () => {
 		            "schemaType": "String!",
 		          },
 		        },
+		        Object {
+		          "deprecationReason": null,
+		          "description": null,
+		          "exportName": null,
+		          "fieldName": " $fragmentRefs",
+		          "resultFieldName": " $fragmentRefs",
+		          "schemaType": "String!",
+		          "type": Object {
+		            "kind": "NonNull",
+		            "nullableType": Object {
+		              "kind": "Reference",
+		              "names": Array [
+		                "any",
+		              ],
+		            },
+		            "schemaType": "String!",
+		          },
+		        },
 		      ],
 		      "kind": "SpecificObject",
 		      "schemaType": "Person",
@@ -213,6 +267,24 @@ test('Can decorate inline fragment spreads', () => {
 		              "kind": "Reference",
 		              "names": Array [
 		                "Planet",
+		              ],
+		            },
+		            "schemaType": "String!",
+		          },
+		        },
+		        Object {
+		          "deprecationReason": null,
+		          "description": null,
+		          "exportName": null,
+		          "fieldName": " $fragmentRefs",
+		          "resultFieldName": " $fragmentRefs",
+		          "schemaType": "String!",
+		          "type": Object {
+		            "kind": "NonNull",
+		            "nullableType": Object {
+		              "kind": "Reference",
+		              "names": Array [
+		                "any",
 		              ],
 		            },
 		            "schemaType": "String!",
@@ -255,6 +327,24 @@ test('Can decorate inline fragment spreads', () => {
 		            "schemaType": "String!",
 		          },
 		        },
+		        Object {
+		          "deprecationReason": null,
+		          "description": null,
+		          "exportName": null,
+		          "fieldName": " $fragmentRefs",
+		          "resultFieldName": " $fragmentRefs",
+		          "schemaType": "String!",
+		          "type": Object {
+		            "kind": "NonNull",
+		            "nullableType": Object {
+		              "kind": "Reference",
+		              "names": Array [
+		                "any",
+		              ],
+		            },
+		            "schemaType": "String!",
+		          },
+		        },
 		      ],
 		      "kind": "SpecificObject",
 		      "schemaType": "Species",
@@ -274,6 +364,24 @@ test('Can decorate inline fragment spreads', () => {
 		              "kind": "Reference",
 		              "names": Array [
 		                "Starship",
+		              ],
+		            },
+		            "schemaType": "String!",
+		          },
+		        },
+		        Object {
+		          "deprecationReason": null,
+		          "description": null,
+		          "exportName": null,
+		          "fieldName": " $fragmentRefs",
+		          "resultFieldName": " $fragmentRefs",
+		          "schemaType": "String!",
+		          "type": Object {
+		            "kind": "NonNull",
+		            "nullableType": Object {
+		              "kind": "Reference",
+		              "names": Array [
+		                "any",
 		              ],
 		            },
 		            "schemaType": "String!",
@@ -303,6 +411,24 @@ test('Can decorate inline fragment spreads', () => {
 		            "schemaType": "String!",
 		          },
 		        },
+		        Object {
+		          "deprecationReason": null,
+		          "description": null,
+		          "exportName": null,
+		          "fieldName": " $fragmentRefs",
+		          "resultFieldName": " $fragmentRefs",
+		          "schemaType": "String!",
+		          "type": Object {
+		            "kind": "NonNull",
+		            "nullableType": Object {
+		              "kind": "Reference",
+		              "names": Array [
+		                "any",
+		              ],
+		            },
+		            "schemaType": "String!",
+		          },
+		        },
 		      ],
 		      "kind": "SpecificObject",
 		      "schemaType": "Vehicle",
@@ -323,23 +449,23 @@ test('Can decorate inline fragment spreads', () => {
 
 	const brandNames = getTypeBrandNames(decorated);
 	expect(brandNames).toMatchInlineSnapshot(`
-								Object {
-								  "allRequiredNames": Array [
-								    "Film",
-								    "Person",
-								    "Planet",
-								    "Species",
-								    "Starship",
-								    "Vehicle",
-								  ],
-								  "fragmentTypeNames": Array [
-								    "Film",
-								    "Person",
-								    "Planet",
-								    "Species",
-								    "Starship",
-								    "Vehicle",
-								  ],
-								}
-				`);
+										Object {
+										  "allRequiredNames": Array [
+										    "Film",
+										    "Person",
+										    "Planet",
+										    "Species",
+										    "Starship",
+										    "Vehicle",
+										  ],
+										  "fragmentTypeNames": Array [
+										    "Film",
+										    "Person",
+										    "Planet",
+										    "Species",
+										    "Starship",
+										    "Vehicle",
+										  ],
+										}
+					`);
 });

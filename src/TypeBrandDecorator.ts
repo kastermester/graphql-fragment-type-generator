@@ -113,6 +113,22 @@ function decorateFieldsWithTypeBrands(
 				schemaType: new GraphQLNonNull(GraphQLString),
 			},
 		},
+		{
+			deprecationReason: null,
+			description: null,
+			exportName: null,
+			fieldName: ' $fragmentRefs',
+			resultFieldName: ' $fragmentRefs',
+			schemaType: new GraphQLNonNull(GraphQLString),
+			type: {
+				kind: 'NonNull',
+				nullableType: {
+					kind: 'Reference',
+					names: ['any'],
+				},
+				schemaType: new GraphQLNonNull(GraphQLString),
+			},
+		},
 		...fields.map(f => {
 			return {
 				...f,
