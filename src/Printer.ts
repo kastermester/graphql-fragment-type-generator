@@ -192,7 +192,10 @@ export function printType(
 					return lineStart + comment.replace(/\n/g, `\n${lineStart}`).replace(/\*\//g, '* /');
 				};
 				fields.forEach((f, idx) => {
-					const fieldName = f.resultFieldName === '' ? `''` : f.resultFieldName;
+					const fieldName =
+						f.resultFieldName === ''
+							? `''`
+							: f.resultFieldName[0] === ' ' ? `'${f.resultFieldName}'` : f.resultFieldName;
 					if (f.deprecationReason != null || f.description != null) {
 						buffer.push(`${indents}  /**`);
 						const lineStart = `${indents}   * `;
@@ -208,9 +211,7 @@ export function printType(
 
 					const typeDef =
 						withNames && f.exportName != null
-							? f.type.kind === 'NonNull'
-								? f.exportName
-								: `${f.exportName} | null`
+							? f.type.kind === 'NonNull' ? f.exportName : `${f.exportName} | null`
 							: printType(true, f.type, withNames, i + 4, typeMap);
 					buffer.push(`${indents + '  '}${fieldName}: ${typeDef};`);
 					if (idx < fields.length - 1) {

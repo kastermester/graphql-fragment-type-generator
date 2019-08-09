@@ -35,7 +35,7 @@ test('Should print type definition on valid input', () => {
 		  "fragmentTypeText": "{
 		  '': Planet;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The name of this planet.
@@ -62,7 +62,7 @@ test('Should print type definition on valid input (plural)', () => {
 		  "fragmentTypeText": "({
 		  '': Planet;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The name of this planet.
@@ -93,7 +93,7 @@ test('Should print as big union when querying interface type', () => {
 		  "fragmentTypeText": "{
 		  '': Film;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The ID of an object
@@ -102,7 +102,7 @@ test('Should print as big union when querying interface type', () => {
 		} | {
 		  '': Person;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The ID of an object
@@ -111,7 +111,7 @@ test('Should print as big union when querying interface type', () => {
 		} | {
 		  '': Planet;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The ID of an object
@@ -120,7 +120,7 @@ test('Should print as big union when querying interface type', () => {
 		} | {
 		  '': Species;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The ID of an object
@@ -129,7 +129,7 @@ test('Should print as big union when querying interface type', () => {
 		} | {
 		  '': Starship;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The ID of an object
@@ -138,7 +138,7 @@ test('Should print as big union when querying interface type', () => {
 		} | {
 		  '': Vehicle;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The ID of an object
@@ -169,7 +169,7 @@ test('Should print as big union with typenames when querying interface type', ()
 		  "fragmentTypeText": "{
 		  '': Film;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Film\\";
 
@@ -180,7 +180,7 @@ test('Should print as big union with typenames when querying interface type', ()
 		} | {
 		  '': Person;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Person\\";
 
@@ -191,7 +191,7 @@ test('Should print as big union with typenames when querying interface type', ()
 		} | {
 		  '': Planet;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Planet\\";
 
@@ -202,7 +202,7 @@ test('Should print as big union with typenames when querying interface type', ()
 		} | {
 		  '': Species;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Species\\";
 
@@ -213,7 +213,7 @@ test('Should print as big union with typenames when querying interface type', ()
 		} | {
 		  '': Starship;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Starship\\";
 
@@ -224,7 +224,7 @@ test('Should print as big union with typenames when querying interface type', ()
 		} | {
 		  '': Vehicle;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Vehicle\\";
 
@@ -268,14 +268,14 @@ test('Should recurse down into connection fields with type brands', () => {
 		  "fragmentTypeText": "{
 		  '': Planet;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Planet\\";
 
 		  residentConnection: {
 		      '': PlanetResidentsConnection;
 
-		       $fragmentRefs: any;
+		      ' $fragmentRefs': any;
 
 		      __typename: \\"PlanetResidentsConnection\\";
 
@@ -285,7 +285,7 @@ test('Should recurse down into connection fields with type brands', () => {
 		      edges: ({
 		          '': PlanetResidentsEdge;
 
-		           $fragmentRefs: any;
+		          ' $fragmentRefs': any;
 
 		          __typename: \\"PlanetResidentsEdge\\";
 
@@ -295,7 +295,7 @@ test('Should recurse down into connection fields with type brands', () => {
 		          node: {
 		              '': Person;
 
-		               $fragmentRefs: any;
+		              ' $fragmentRefs': any;
 
 		              __typename: \\"Person\\";
 
@@ -343,7 +343,7 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 		  "fragmentTypeText": "{
 		  '': Film;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Film\\";
 
@@ -354,7 +354,7 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 		} | {
 		  '': Person;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Person\\";
 
@@ -365,7 +365,7 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 		} | {
 		  '': Planet;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Planet\\";
 
@@ -381,7 +381,7 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 		} | {
 		  '': Species;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Species\\";
 
@@ -392,7 +392,7 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 		} | {
 		  '': Starship;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Starship\\";
 
@@ -403,7 +403,7 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 		} | {
 		  '': Vehicle;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  __typename: \\"Vehicle\\";
 
@@ -422,27 +422,27 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 	const result = getMultiFragmentTextTypeDefinition(schema, text, 'N');
 
 	expect(result).toMatchInlineSnapshot(`
-						"{
-						  __typename: \\"Planet\\";
+								"{
+								  __typename: \\"Planet\\";
 
-						  /**
-						   * The ID of an object
-						   */
-						  id: string;
+								  /**
+								   * The ID of an object
+								   */
+								  id: string;
 
-						  /**
-						   * The name of this planet.
-						   */
-						  name: string | null;
-						} | {
-						  __typename: \\"Film\\" | \\"Person\\" | \\"Species\\" | \\"Starship\\" | \\"Vehicle\\";
+								  /**
+								   * The name of this planet.
+								   */
+								  name: string | null;
+								} | {
+								  __typename: \\"Film\\" | \\"Person\\" | \\"Species\\" | \\"Starship\\" | \\"Vehicle\\";
 
-						  /**
-						   * The id of the object.
-						   */
-						  id: string;
-						}"
-			`);
+								  /**
+								   * The id of the object.
+								   */
+								  id: string;
+								}"
+				`);
 });
 
 test('Should be able to print type with exported names', () => {
@@ -481,7 +481,7 @@ fragment P on Planet {
 		  "exportNamesTypeScriptCode": "export type NodeType = {
 		  '': Person;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * The name of this person.
@@ -493,7 +493,7 @@ fragment P on Planet {
 		export type FilmType = {
 		  '': PersonFilmsConnection;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  /**
 		   * A list of edges.
@@ -501,7 +501,7 @@ fragment P on Planet {
 		  edges: ({
 		      '': PersonFilmsEdge;
 
-		       $fragmentRefs: any;
+		      ' $fragmentRefs': any;
 
 		      /**
 		       * The item at the end of the edge
@@ -509,7 +509,7 @@ fragment P on Planet {
 		      node: {
 		          '': Film;
 
-		           $fragmentRefs: any;
+		          ' $fragmentRefs': any;
 
 		          /**
 		           * The ID of an object
@@ -524,12 +524,12 @@ fragment P on Planet {
 		  "fragmentTypeText": "{
 		  '': Planet;
 
-		   $fragmentRefs: any;
+		  ' $fragmentRefs': any;
 
 		  residentConnection: {
 		      '': PlanetResidentsConnection;
 
-		       $fragmentRefs: any;
+		      ' $fragmentRefs': any;
 
 		      /**
 		       * A list of edges.
@@ -537,7 +537,7 @@ fragment P on Planet {
 		      edges: ({
 		          '': PlanetResidentsEdge;
 
-		           $fragmentRefs: any;
+		          ' $fragmentRefs': any;
 
 		          /**
 		           * The item at the end of the edge
