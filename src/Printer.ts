@@ -133,7 +133,10 @@ function printFlattenedFragments(fragments: T.FlattenedSpreadType[], indentLevel
 	}
 }
 
-function scalarTypeToTSType(type: GraphQLScalarType): string {
+function scalarTypeToTSType(type: GraphQLScalarType, customScalarMap: { [scalarName: string]: string }): string {
+	if (customScalarMap[type.name] != null) {
+		return customScalarMap[type.name];
+	}
 	if (type === GraphQLInt || type === GraphQLFloat) {
 		return 'number';
 	}
@@ -144,7 +147,14 @@ function scalarTypeToTSType(type: GraphQLScalarType): string {
 	return 'string';
 }
 
-export function printType(nullable: boolean, type: T.FlattenedType, withNames: boolean, indentLevel?: number): string {
+export function printType(
+	nullable: boolean,
+	type: T.FlattenedType,
+	withNames: boolean,
+	indentLevel?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
+): string {
+	const typeMap = scalarTypeMap == null ? {} : scalarTypeMap;
 	indentLevel = indentLevel != null ? indentLevel : 0;
 	const wrap = (t: string) => {
 		if (!nullable) {
@@ -160,14 +170,14 @@ export function printType(nullable: boolean, type: T.FlattenedType, withNames: b
 			if (type.knownPossibleValues != null) {
 				return wrap(type.knownPossibleValues.map(e => JSON.stringify(e)).join(' | '));
 			}
-			return wrap(scalarTypeToTSType(type.schemaType as GraphQLScalarType));
+			return wrap(scalarTypeToTSType(type.schemaType as GraphQLScalarType, typeMap));
 		}
 		case 'NonNull': {
-			return printType(false, type.nullableType, withNames, indentLevel + 2);
+			return printType(false, type.nullableType, withNames, indentLevel + 2, typeMap);
 		}
 		case 'List': {
 			const complexElementType = isParenAroundTypeNeeded(type.elementType);
-			const elementType = printType(true, type.elementType, withNames, indentLevel);
+			const elementType = printType(true, type.elementType, withNames, indentLevel, typeMap);
 			return wrap(complexElementType ? `(${elementType})[]` : `${elementType}[]`);
 		}
 		case 'Object': {
@@ -198,8 +208,10 @@ export function printType(nullable: boolean, type: T.FlattenedType, withNames: b
 
 					const typeDef =
 						withNames && f.exportName != null
-							? f.type.kind === 'NonNull' ? f.exportName : `${f.exportName} | null`
-							: printType(true, f.type, withNames, i + 4);
+							? f.type.kind === 'NonNull'
+								? f.exportName
+								: `${f.exportName} | null`
+							: printType(true, f.type, withNames, i + 4, typeMap);
 					buffer.push(`${indents + '  '}${fieldName}: ${typeDef};`);
 					if (idx < fields.length - 1) {
 						buffer.push('');

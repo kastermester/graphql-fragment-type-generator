@@ -68,9 +68,10 @@ export function getFragmentTextTypeDefinition(
 	fragmentText: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): string {
 	const ast = getNormalizedAst(schema, fragmentText, fieldsToIgnore);
-	return printType(false, ast, false, indentSpaces);
+	return printType(false, ast, false, indentSpaces, scalarTypeMap);
 }
 
 export function getMultiFragmentTextTypeDefinition(
@@ -79,9 +80,10 @@ export function getMultiFragmentTextTypeDefinition(
 	rootFragmentName: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): string {
 	const ast = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
-	return printType(false, ast, false, indentSpaces);
+	return printType(false, ast, false, indentSpaces, scalarTypeMap);
 }
 
 export function getOperationTypeDefinition(
@@ -89,9 +91,10 @@ export function getOperationTypeDefinition(
 	queryText: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): string {
 	const ast = getNormalizedOperationAst(schema, queryText, fieldsToIgnore);
-	return printType(false, ast, false, indentSpaces);
+	return printType(false, ast, false, indentSpaces, scalarTypeMap);
 }
 
 export interface BrandedTypeResult {
@@ -112,9 +115,10 @@ export function getFragmentTextBrandedTypeDefinition(
 	fragmentText: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): BrandedTypeResult {
 	const normalizedAst = getNormalizedAst(schema, fragmentText, fieldsToIgnore);
-	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces);
+	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces, scalarTypeMap);
 }
 
 export function getMultiFragmentTextBrandedTypeDefinition(
@@ -123,9 +127,10 @@ export function getMultiFragmentTextBrandedTypeDefinition(
 	rootFragmentName: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): BrandedTypeResult {
 	const normalizedAst = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
-	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces);
+	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces, scalarTypeMap);
 }
 
 export function getOperationBrandedTypeDefinition(
@@ -133,9 +138,10 @@ export function getOperationBrandedTypeDefinition(
 	queryText: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): BrandedTypeResult {
 	const normalizedAst = getNormalizedOperationAst(schema, queryText, fieldsToIgnore);
-	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces);
+	return getTypeBrandedTypeDefinition(normalizedAst, false, indentSpaces, scalarTypeMap);
 }
 
 export function getFragmentTextBrandedTypeWithNamesDefinition(
@@ -143,9 +149,10 @@ export function getFragmentTextBrandedTypeWithNamesDefinition(
 	fragmentText: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): NamedBrandedTypeResult {
 	const normalizedAst = getNormalizedAst(schema, fragmentText, fieldsToIgnore);
-	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces);
+	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces, scalarTypeMap);
 }
 
 export function getMultiFragmentTextBrandedTypeWithNamesDefinition(
@@ -154,9 +161,10 @@ export function getMultiFragmentTextBrandedTypeWithNamesDefinition(
 	rootFragmentName: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): NamedBrandedTypeResult {
 	const normalizedAst = getNormalizedMultiFragmentAst(schema, fragmentText, rootFragmentName, fieldsToIgnore);
-	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces);
+	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces, scalarTypeMap);
 }
 
 export function getOperationBrandedTypeWithNamesDefinition(
@@ -164,15 +172,17 @@ export function getOperationBrandedTypeWithNamesDefinition(
 	queryText: string,
 	fieldsToIgnore?: string[],
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): NamedBrandedTypeResult {
 	const normalizedAst = getNormalizedOperationAst(schema, queryText, fieldsToIgnore);
-	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces);
+	return getNamedTypeBrandedTypeDefinitions(normalizedAst, indentSpaces, scalarTypeMap);
 }
 
 function getTypeBrandedTypeDefinition(
 	normalizedAst: T.FlattenedObjectType | T.FlattenedListType,
 	withNames: boolean,
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): BrandedTypeResult {
 	const brandedAst = decorateTypeWithTypeBrands(normalizedAst) as T.FlattenedObjectType | T.FlattenedListType;
 
@@ -181,7 +191,7 @@ function getTypeBrandedTypeDefinition(
 	const brandsToImport = names.allRequiredNames;
 	const fragmentTypeBrandText = getFragmentTypeBrandText(names.fragmentTypeNames, brandedAst.kind === 'List');
 
-	const typeText = printType(false, brandedAst, withNames, indentSpaces);
+	const typeText = printType(false, brandedAst, withNames, indentSpaces, scalarTypeMap);
 
 	return {
 		brandsToImport: brandsToImport,
@@ -190,12 +200,17 @@ function getTypeBrandedTypeDefinition(
 	};
 }
 
-function getFragmentTypeBrandText(names: string[], plural: boolean, indentSpaces?: number): string {
+function getFragmentTypeBrandText(
+	names: string[],
+	plural: boolean,
+	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
+): string {
 	if (indentSpaces == null) {
 		indentSpaces = 0;
 	}
 	if (plural) {
-		return '(' + getFragmentTypeBrandText(names, false, indentSpaces) + ' | null)[]';
+		return '(' + getFragmentTypeBrandText(names, false, indentSpaces, scalarTypeMap) + ' | null)[]';
 	}
 	return `{
 ${' '.repeat(indentSpaces + 2)}'': ${names.join(' | ')};
@@ -205,8 +220,9 @@ ${' '.repeat(indentSpaces)}}`;
 function getNamedTypeBrandedTypeDefinitions(
 	normalizedAst: T.FlattenedObjectType | T.FlattenedListType,
 	indentSpaces?: number,
+	scalarTypeMap?: { [scalarName: string]: string },
 ): NamedBrandedTypeResult {
-	const res = getTypeBrandedTypeDefinition(normalizedAst, true, indentSpaces);
+	const res = getTypeBrandedTypeDefinition(normalizedAst, true, indentSpaces, scalarTypeMap);
 	const extractedNames = extractNamedTypes(normalizedAst);
 
 	const tsChunks: string[] = [];
