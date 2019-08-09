@@ -5,10 +5,10 @@ import { mapFragmentType } from './FragmentMapper';
 import { mapMultiFragmentType } from './MultiFragmentMapper';
 import { mapOperationType } from './OperationMapper';
 import { printType } from './Printer';
-import { decorateTypeWithTypeBrands, decorateWithTypeBrands, getTypeBrandNames } from './TypeBrandDecorator';
+import { decorateTypeWithTypeBrands, getTypeBrandNames } from './TypeBrandDecorator';
 import { normalizeListType, normalizeType } from './TypeNormalizer';
 import * as T from './Types';
-import { validateMultiFragmentAST, validateSingleFragmentAST } from './Validator';
+import { validateMultiFragmentAST } from './Validator';
 
 export function getNormalizedAst(
 	schema: GraphQLSchema,
