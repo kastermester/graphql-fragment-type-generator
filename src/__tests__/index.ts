@@ -24,24 +24,24 @@ test('Should print type definition on valid input', () => {
 
 	const result = getFragmentTextBrandedTypeDefinition(schema, text);
 
-	const fragmentText = `{
-  '': Planet;
+	expect(result).toMatchInlineSnapshot(`
+		Object {
+		  "brandsToImport": Array [
+		    "Planet",
+		  ],
+		  "fragmentTypeBrandText": "{
+		  '': Planet;
+		}",
+		  "fragmentTypeText": "{
+		  '': Planet;
 
-  /**
-   * The name of this planet.
-   */
-  name: string | null;
-}`;
-	const brandsToImport = ['Planet'];
-	const brandText = `{
-  '': Planet;
-}`;
-	const expected: typeof result = {
-		brandsToImport: brandsToImport,
-		fragmentTypeBrandText: brandText,
-		fragmentTypeText: fragmentText,
-	};
-	expect(result).toEqual(expected);
+		  /**
+		   * The name of this planet.
+		   */
+		  name: string | null;
+		}",
+		}
+	`);
 });
 
 test('Should print type definition on valid input (plural)', () => {
@@ -49,156 +49,164 @@ test('Should print type definition on valid input (plural)', () => {
 
 	const result = getFragmentTextBrandedTypeDefinition(schema, text);
 
-	const fragmentText = `({
-  '': Planet;
+	expect(result).toMatchInlineSnapshot(`
+		Object {
+		  "brandsToImport": Array [
+		    "Planet",
+		  ],
+		  "fragmentTypeBrandText": "({
+		  '': Planet;
+		} | null)[]",
+		  "fragmentTypeText": "({
+		  '': Planet;
 
-  /**
-   * The name of this planet.
-   */
-  name: string | null;
-} | null)[]`;
-	const brandsToImport = ['Planet'];
-	const brandText = `({
-  '': Planet;
-} | null)[]`;
-	const expected: typeof result = {
-		brandsToImport: brandsToImport,
-		fragmentTypeBrandText: brandText,
-		fragmentTypeText: fragmentText,
-	};
-	expect(result).toEqual(expected);
+		  /**
+		   * The name of this planet.
+		   */
+		  name: string | null;
+		} | null)[]",
+		}
+	`);
 });
 
 test('Should print as big union when querying interface type', () => {
 	const text = 'fragment N on Node { id }';
 
 	const result = getFragmentTextBrandedTypeDefinition(schema, text);
+	expect(result).toMatchInlineSnapshot(`
+		Object {
+		  "brandsToImport": Array [
+		    "Film",
+		    "Person",
+		    "Planet",
+		    "Species",
+		    "Starship",
+		    "Vehicle",
+		  ],
+		  "fragmentTypeBrandText": "{
+		  '': Film | Person | Planet | Species | Starship | Vehicle;
+		}",
+		  "fragmentTypeText": "{
+		  '': Film;
 
-	const fragmentText = `{
-  '': Film;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Person;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Person;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Planet;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Planet;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Species;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Species;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Starship;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Starship;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Vehicle;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Vehicle;
-
-  /**
-   * The ID of an object
-   */
-  id: string;
-}`;
-	const brandsToImport = ['Film', 'Person', 'Planet', 'Species', 'Starship', 'Vehicle'];
-	const brandText = `{
-  '': Film | Person | Planet | Species | Starship | Vehicle;
-}`;
-	const expected: typeof result = {
-		brandsToImport: brandsToImport,
-		fragmentTypeBrandText: brandText,
-		fragmentTypeText: fragmentText,
-	};
-	expect(result).toEqual(expected);
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		}",
+		}
+	`);
 });
 
 test('Should print as big union with typenames when querying interface type', () => {
 	const text = 'fragment N on Node { id __typename }';
 
 	const result = getFragmentTextBrandedTypeDefinition(schema, text);
+	expect(result).toMatchInlineSnapshot(`
+		Object {
+		  "brandsToImport": Array [
+		    "Film",
+		    "Person",
+		    "Planet",
+		    "Species",
+		    "Starship",
+		    "Vehicle",
+		  ],
+		  "fragmentTypeBrandText": "{
+		  '': Film | Person | Planet | Species | Starship | Vehicle;
+		}",
+		  "fragmentTypeText": "{
+		  '': Film;
 
-	const fragmentText = `{
-  '': Film;
+		  __typename: \\"Film\\";
 
-  __typename: "Film";
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Person;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Person;
+		  __typename: \\"Person\\";
 
-  __typename: "Person";
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Planet;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Planet;
+		  __typename: \\"Planet\\";
 
-  __typename: "Planet";
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Species;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Species;
+		  __typename: \\"Species\\";
 
-  __typename: "Species";
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Starship;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Starship;
+		  __typename: \\"Starship\\";
 
-  __typename: "Starship";
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Vehicle;
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Vehicle;
+		  __typename: \\"Vehicle\\";
 
-  __typename: "Vehicle";
-
-  /**
-   * The ID of an object
-   */
-  id: string;
-}`;
-	const brandsToImport = ['Film', 'Person', 'Planet', 'Species', 'Starship', 'Vehicle'];
-	const brandText = `{
-  '': Film | Person | Planet | Species | Starship | Vehicle;
-}`;
-	const expected: typeof result = {
-		brandsToImport: brandsToImport,
-		fragmentTypeBrandText: brandText,
-		fragmentTypeText: fragmentText,
-	};
-	expect(result).toEqual(expected);
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		}",
+		}
+	`);
 });
 
 test('Should recurse down into connection fields with type brands', () => {
@@ -218,52 +226,58 @@ test('Should recurse down into connection fields with type brands', () => {
 }`;
 	const result = getFragmentTextBrandedTypeDefinition(schema, text);
 
-	const fragmentText = `{
-  '': Planet;
+	expect(result).toMatchInlineSnapshot(`
+		Object {
+		  "brandsToImport": Array [
+		    "Person",
+		    "Planet",
+		    "PlanetResidentsConnection",
+		    "PlanetResidentsEdge",
+		  ],
+		  "fragmentTypeBrandText": "{
+		  '': Planet;
+		}",
+		  "fragmentTypeText": "{
+		  '': Planet;
 
-  __typename: "Planet";
+		  __typename: \\"Planet\\";
 
-  residentConnection: {
-      '': PlanetResidentsConnection;
+		  residentConnection: {
+		      '': PlanetResidentsConnection;
 
-      __typename: "PlanetResidentsConnection";
+		      __typename: \\"PlanetResidentsConnection\\";
 
-      /**
-       * A list of edges.
-       */
-      edges: ({
-          '': PlanetResidentsEdge;
+		      /**
+		       * A list of edges.
+		       */
+		      edges: ({
+		          '': PlanetResidentsEdge;
 
-          __typename: "PlanetResidentsEdge";
+		          __typename: \\"PlanetResidentsEdge\\";
 
-          /**
-           * The item at the end of the edge
-           */
-          node: {
-              '': Person;
+		          /**
+		           * The item at the end of the edge
+		           */
+		          node: {
+		              '': Person;
 
-              __typename: "Person";
+		              __typename: \\"Person\\";
 
-              /**
-               * The ID of an object
-               */
-              id: string;
+		              /**
+		               * The ID of an object
+		               */
+		              id: string;
 
-              /**
-               * The name of this person.
-               */
-              name: string | null;
-            } | null;
-        } | null)[] | null;
-    } | null;
-}`;
-
-	expect(result.fragmentTypeText).toEqual(fragmentText);
-	expect(result.brandsToImport).toEqual(['Person', 'Planet', 'PlanetResidentsConnection', 'PlanetResidentsEdge']);
-	const brandedType = `{
-  '': Planet;
-}`;
-	expect(result.fragmentTypeBrandText).toEqual(brandedType);
+		              /**
+		               * The name of this person.
+		               */
+		              name: string | null;
+		            } | null;
+		        } | null)[] | null;
+		    } | null;
+		}",
+		}
+	`);
 });
 
 test('Should throw on syntax errors', () => {
@@ -277,76 +291,81 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 
 	const result = getMultiFragmentTextBrandedTypeDefinition(schema, text, 'N');
 
-	const fragmentText = `{
-  '': Film;
+	expect(result).toMatchInlineSnapshot(`
+		Object {
+		  "brandsToImport": Array [
+		    "Film",
+		    "Person",
+		    "Planet",
+		    "Species",
+		    "Starship",
+		    "Vehicle",
+		  ],
+		  "fragmentTypeBrandText": "{
+		  '': Film | Person | Planet | Species | Starship | Vehicle;
+		}",
+		  "fragmentTypeText": "{
+		  '': Film;
 
-  __typename: "Film";
+		  __typename: \\"Film\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Person;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Person;
 
-  __typename: "Person";
+		  __typename: \\"Person\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Planet;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Planet;
 
-  __typename: "Planet";
+		  __typename: \\"Planet\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
 
-  /**
-   * The name of this planet.
-   */
-  name: string | null;
-} | {
-  '': Species;
+		  /**
+		   * The name of this planet.
+		   */
+		  name: string | null;
+		} | {
+		  '': Species;
 
-  __typename: "Species";
+		  __typename: \\"Species\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Starship;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Starship;
 
-  __typename: "Starship";
+		  __typename: \\"Starship\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-} | {
-  '': Vehicle;
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		} | {
+		  '': Vehicle;
 
-  __typename: "Vehicle";
+		  __typename: \\"Vehicle\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-}`;
-	const brandsToImport = ['Film', 'Person', 'Planet', 'Species', 'Starship', 'Vehicle'];
-	const brandText = `{
-  '': Film | Person | Planet | Species | Starship | Vehicle;
-}`;
-	const expected: typeof result = {
-		brandsToImport: brandsToImport,
-		fragmentTypeBrandText: brandText,
-		fragmentTypeText: fragmentText,
-	};
-	expect(result).toEqual(expected);
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		}",
+		}
+	`);
 });
 
 test('Should print type definition on valid input - in multi fragment mode', () => {
@@ -354,27 +373,28 @@ test('Should print type definition on valid input - in multi fragment mode', () 
 
 	const result = getMultiFragmentTextTypeDefinition(schema, text, 'N');
 
-	const fragmentText = `{
-  __typename: "Planet";
+	expect(result).toMatchInlineSnapshot(`
+				"{
+				  __typename: \\"Planet\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
+				  /**
+				   * The ID of an object
+				   */
+				  id: string;
 
-  /**
-   * The name of this planet.
-   */
-  name: string | null;
-} | {
-  __typename: "Film" | "Person" | "Species" | "Starship" | "Vehicle";
+				  /**
+				   * The name of this planet.
+				   */
+				  name: string | null;
+				} | {
+				  __typename: \\"Film\\" | \\"Person\\" | \\"Species\\" | \\"Starship\\" | \\"Vehicle\\";
 
-  /**
-   * The id of the object.
-   */
-  id: string;
-}`;
-	expect(result).toBe(fragmentText);
+				  /**
+				   * The id of the object.
+				   */
+				  id: string;
+				}"
+		`);
 });
 
 test('Should be able to print type with exported names', () => {
@@ -399,58 +419,71 @@ fragment P on Planet {
 
 	const res = getFragmentTextBrandedTypeWithNamesDefinition(schema, text);
 
-	//tslint:disable
-	const fragmentText = `{
-  '': Planet;
+	expect(res).toMatchInlineSnapshot(`
+		Object {
+		  "brandsToImport": Array [
+		    "Film",
+		    "Person",
+		    "PersonFilmsConnection",
+		    "PersonFilmsEdge",
+		    "Planet",
+		    "PlanetResidentsConnection",
+		    "PlanetResidentsEdge",
+		  ],
+		  "exportNamesTypeScriptCode": "export type NodeType = {
+		  '': Person;
 
-  residentConnection: {
-      '': PlanetResidentsConnection;
+		  /**
+		   * The name of this person.
+		   */
+		  name: string | null;
 
-      /**
-       * A list of edges.
-       */
-      edges: ({
-          '': PlanetResidentsEdge;
+		  filmConnection: FilmType | null;
+		};
+		export type FilmType = {
+		  '': PersonFilmsConnection;
 
-          /**
-           * The item at the end of the edge
-           */
-          node: NodeType | null;
-        } | null)[] | null;
-    } | null;
-}`;
-	expect(res.fragmentTypeText).toEqual(fragmentText);
-	const typeNames = `export type NodeType = {
-  '': Person;
+		  /**
+		   * A list of edges.
+		   */
+		  edges: ({
+		      '': PersonFilmsEdge;
 
-  /**
-   * The name of this person.
-   */
-  name: string | null;
+		      /**
+		       * The item at the end of the edge
+		       */
+		      node: {
+		          '': Film;
 
-  filmConnection: FilmType | null;
-};
-export type FilmType = {
-  '': PersonFilmsConnection;
+		          /**
+		           * The ID of an object
+		           */
+		          id: string;
+		        } | null;
+		    } | null)[] | null;
+		};",
+		  "fragmentTypeBrandText": "{
+		  '': Planet;
+		}",
+		  "fragmentTypeText": "{
+		  '': Planet;
 
-  /**
-   * A list of edges.
-   */
-  edges: ({
-      '': PersonFilmsEdge;
+		  residentConnection: {
+		      '': PlanetResidentsConnection;
 
-      /**
-       * The item at the end of the edge
-       */
-      node: {
-          '': Film;
+		      /**
+		       * A list of edges.
+		       */
+		      edges: ({
+		          '': PlanetResidentsEdge;
 
-          /**
-           * The ID of an object
-           */
-          id: string;
-        } | null;
-    } | null)[] | null;
-};`;
-	expect(res.exportNamesTypeScriptCode).toEqual(typeNames);
+		          /**
+		           * The item at the end of the edge
+		           */
+		          node: NodeType | null;
+		        } | null)[] | null;
+		    } | null;
+		}",
+		}
+	`);
 });

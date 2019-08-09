@@ -30,36 +30,37 @@ test('Can remove ignored fields', () => {
 
 	const mapped = mapOperationType(schema, ast, ['ignoredName']);
 
-	const expected: typeof mapped = {
-		fields: [
-			{
-				exportName: null,
-				fieldName: 'person',
-				resultFieldName: 'person',
-				schemaType: schema.getType('Person') as GraphQLObjectType,
-				type: {
-					fields: [
-						{
-							exportName: null,
-							fieldName: 'name',
-							resultFieldName: 'name',
-							schemaType: GraphQLString,
-							type: {
-								kind: 'Scalar',
-								knownPossibleValues: null,
-								schemaType: GraphQLString,
-							},
-						},
-					],
-					fragmentSpreads: [],
-					kind: 'Object',
-					schemaType: schema.getType('Person') as GraphQLObjectType,
-				},
-			},
-		],
-		fragmentSpreads: [],
-		kind: 'Object',
-		schemaType: schema.getQueryType(),
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [
+		    Object {
+		      "exportName": null,
+		      "fieldName": "person",
+		      "resultFieldName": "person",
+		      "schemaType": "Person",
+		      "type": Object {
+		        "fields": Array [
+		          Object {
+		            "exportName": null,
+		            "fieldName": "name",
+		            "resultFieldName": "name",
+		            "schemaType": "String",
+		            "type": Object {
+		              "kind": "Scalar",
+		              "knownPossibleValues": null,
+		              "schemaType": "String",
+		            },
+		          },
+		        ],
+		        "fragmentSpreads": Array [],
+		        "kind": "Object",
+		        "schemaType": "Person",
+		      },
+		    },
+		  ],
+		  "fragmentSpreads": Array [],
+		  "kind": "Object",
+		  "schemaType": "Root",
+		}
+	`);
 });

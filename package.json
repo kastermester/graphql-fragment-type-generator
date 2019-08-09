@@ -1,33 +1,33 @@
 {
-  "name": "graphql-fragment-type-generator",
-  "version": "0.1.7",
-  "description": "",
-  "main": "lib/index.js",
-  "scripts": {
-    "build": "rm -rf lib && tsc -p tsconfig-build.json",
-    "fmt": "prettier --write -l 'src/**/*.ts'",
-    "lint": "tslint --project tsconfig.json src/*.ts src/**/*.ts",
-    "prepublishOnly": "npm test && npm run lint && npm run build",
-    "test": "jest --coverage"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "aggregate-error": "^1.0.0"
-  },
-  "peerDependencies": {
-    "graphql": "^0.11.7"
-  },
-  "devDependencies": {
-    "@types/graphql": "^0.11.6",
-    "@types/jest": "^21.1.8",
-    "@types/node": "^8.0.53",
-    "graphql": "^0.11.7",
-    "jest": "21.2.1",
-    "prettier": "^1.8.2",
-    "ts-jest": "21.2.3",
-    "ts-node": "^3.3.0",
-    "tslint": "5.8.0",
-    "typescript": "2.6.1"
-  }
+	"name": "graphql-fragment-type-generator",
+	"version": "0.1.7",
+	"description": "",
+	"main": "lib/index.js",
+	"scripts": {
+		"build": "rm -rf lib && tsc -p tsconfig-build.json",
+		"fmt": "prettier --write -l 'src/**/*.ts'",
+		"lint": "tslint --project tsconfig.json src/*.ts src/**/*.ts",
+		"prepublishOnly": "npm test && npm run lint && npm run build",
+		"test": "jest --coverage"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"aggregate-error": "^1.0.0"
+	},
+	"peerDependencies": {
+		"graphql": "^0.11.7"
+	},
+	"devDependencies": {
+		"@types/graphql": "^0.11.6",
+		"@types/jest": "^24.0.17",
+		"@types/node": "^8.0.53",
+		"graphql": "^0.11.7",
+		"jest": "24.8.0",
+		"prettier": "^1.8.2",
+		"ts-jest": "24.0.2",
+		"ts-node": "^3.3.0",
+		"tslint": "5.8.0",
+		"typescript": "3.5.3"
+	}
 }

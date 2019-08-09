@@ -1,23 +1,8 @@
 import * as fs from 'fs';
-import {
-	buildClientSchema,
-	parse,
-	DocumentNode,
-	GraphQLInt,
-	GraphQLInterfaceType,
-	GraphQLID,
-	GraphQLList,
-	GraphQLNonNull,
-	GraphQLObjectType,
-	GraphQLString,
-	GraphQLUnionType,
-	Kind,
-	Source,
-} from 'graphql';
+import { buildClientSchema, GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 import * as path from 'path';
-import { printFlattedObjectType, printType } from '../Printer';
-import { FlattenedListType, FlattenedObjectType, FlattenedType } from '../Types';
-import { validateSingleFragmentAST } from '../Validator';
+import { printType } from '../Printer';
+import { FlattenedListType, FlattenedObjectType } from '../Types';
 
 const schema = buildClientSchema(JSON.parse(fs.readFileSync(path.resolve(__dirname, 'schema.json'), 'utf-8')).data);
 
@@ -45,13 +30,15 @@ test('Can print super simple fragment', () => {
 	};
 
 	const printed = printType(false, type, false);
-	const expected = `{
-  /**
-   * The name of this planet.
-   */
-  name: string | null;
-}`;
-	expect(printed).toEqual(expected);
+
+	expect(printed).toMatchInlineSnapshot(`
+		"{
+		  /**
+		   * The name of this planet.
+		   */
+		  name: string | null;
+		}"
+	`);
 });
 
 test('Can print aliases', () => {
@@ -77,13 +64,14 @@ test('Can print aliases', () => {
 		schemaTypes: [schema.getType('Planet') as GraphQLObjectType],
 	};
 	const printed = printType(false, type, false);
-	const expected = `{
-  /**
-   * The name of this planet.
-   */
-  newName: string | null;
-}`;
-	expect(printed).toEqual(expected);
+	expect(printed).toMatchInlineSnapshot(`
+		"{
+		  /**
+		   * The name of this planet.
+		   */
+		  newName: string | null;
+		}"
+	`);
 });
 
 test('Can print inline fragment spreads', () => {
@@ -133,13 +121,14 @@ test('Can print inline fragment spreads', () => {
 		],
 	};
 	const printed = printType(false, type, false);
-	const expected = `{
-  /**
-   * The name of this planet.
-   */
-  name: string | null;
-} | {}`;
-	expect(printed).toEqual(expected);
+	expect(printed).toMatchInlineSnapshot(`
+		"{
+		  /**
+		   * The name of this planet.
+		   */
+		  name: string | null;
+		} | {}"
+	`);
 });
 
 test('Can print multiple inline fragment spreads', () => {
@@ -222,21 +211,22 @@ test('Can print multiple inline fragment spreads', () => {
 		],
 	};
 	const printed = printType(false, type, false);
-	const expected = `{
-  birthYear: string | null;
+	expect(printed).toMatchInlineSnapshot(`
+		"{
+		  birthYear: string | null;
 
-  /**
-   * The gender of this person. Either "Male", "Female" or "unknown",
-   * "n/a" if the person does not have a gender.
-   */
-  gender: string | null;
-} | {
-  /**
-   * The name of this planet.
-   */
-  name: string | null;
-} | {}`;
-	expect(printed).toEqual(expected);
+		  /**
+		   * The gender of this person. Either \\"Male\\", \\"Female\\" or \\"unknown\\",
+		   * \\"n/a\\" if the person does not have a gender.
+		   */
+		  gender: string | null;
+		} | {
+		  /**
+		   * The name of this planet.
+		   */
+		  name: string | null;
+		} | {}"
+	`);
 });
 
 test('Can print normalized type with mixed field selections and fragment spreads', () => {
@@ -421,36 +411,37 @@ test('Can print normalized type with mixed field selections and fragment spreads
 	};
 
 	const printed = printType(false, normalized, false);
-	const expected = `{
-  __typename: "Person";
+	expect(printed).toMatchInlineSnapshot(`
+		"{
+		  __typename: \\"Person\\";
 
-  birthYear: string | null;
+		  birthYear: string | null;
 
-  gender: string | null;
+		  gender: string | null;
 
-  id: string;
-} | {
-  __typename: "Planet";
+		  id: string;
+		} | {
+		  __typename: \\"Planet\\";
 
-  /**
-   * @deprecated Test deprecation reason no description
-   */
-  id: string;
+		  /**
+		   * @deprecated Test deprecation reason no description
+		   */
+		  id: string;
 
-  /**
-   * The name of the planet.
-   * @deprecated Test deprecation reason
-   */
-  name: string | null;
-} | {
-  __typename: "Film" | "Species" | "Starship" | "Vehicle";
+		  /**
+		   * The name of the planet.
+		   * @deprecated Test deprecation reason
+		   */
+		  name: string | null;
+		} | {
+		  __typename: \\"Film\\" | \\"Species\\" | \\"Starship\\" | \\"Vehicle\\";
 
-  /**
-   * The ID of an object
-   */
-  id: string;
-}`;
-	expect(printed).toBe(expected);
+		  /**
+		   * The ID of an object
+		   */
+		  id: string;
+		}"
+	`);
 });
 test('Can print branded types', () => {
 	const type: FlattenedObjectType = {
@@ -615,22 +606,23 @@ test('Can print branded types', () => {
 	};
 
 	const printed = printType(false, type, false);
-	const expected = `{
-  '': Film;
-} | {
-  '': Person;
-} | {
-  '': Planet;
+	expect(printed).toMatchInlineSnapshot(`
+		"{
+		  '': Film;
+		} | {
+		  '': Person;
+		} | {
+		  '': Planet;
 
-  name: string | null;
-} | {
-  '': Species;
-} | {
-  '': Starship;
-} | {
-  '': Vehicle;
-}`;
-	expect(printed).toBe(expected);
+		  name: string | null;
+		} | {
+		  '': Species;
+		} | {
+		  '': Starship;
+		} | {
+		  '': Vehicle;
+		}"
+	`);
 });
 
 test('encapsulation of ({comlex} | {union type})[] lists with parens', () => {
@@ -698,12 +690,13 @@ test('encapsulation of ({comlex} | {union type})[] lists with parens', () => {
 	} as FlattenedListType;
 
 	const printed = printType(false, type, false);
-	const expected = `({
-    '': Film;
-  } | {
-    '': Person;
-  })[]`;
-	expect(printed).toBe(expected);
+	expect(printed).toMatchInlineSnapshot(`
+		"({
+		    '': Film;
+		  } | {
+		    '': Person;
+		  })[]"
+	`);
 });
 
 test('encapsulation of multiple reference types list', () => {
@@ -721,6 +714,5 @@ test('encapsulation of multiple reference types list', () => {
 	} as FlattenedListType;
 
 	const printed = printType(false, type, false);
-	const expected = '(Film | Person)[]';
-	expect(printed).toBe(expected);
+	expect(printed).toMatchInlineSnapshot(`"(Film | Person)[]"`);
 });

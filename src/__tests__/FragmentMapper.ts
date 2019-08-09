@@ -26,38 +26,40 @@ test('Can remove ignored fields', () => {
 
 	const mapped = mapFragmentType(schema, ast, ['ignoredName']);
 
-	const expected: typeof mapped = {
-		fields: [],
-		fragmentSpreads: [],
-		kind: 'Object',
-		schemaType: schema.getType('Planet') as GraphQLObjectType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [],
+		  "fragmentSpreads": Array [],
+		  "kind": "Object",
+		  "schemaType": "Planet",
+		}
+	`);
 });
 test('Can map super simple fragment', () => {
 	const ast = textToAST('fragment P on Planet { name }');
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		fields: [
-			{
-				exportName: null,
-				fieldName: 'name',
-				resultFieldName: 'name',
-				schemaType: GraphQLString,
-				type: {
-					kind: 'Scalar',
-					knownPossibleValues: null,
-					schemaType: GraphQLString,
-				},
-			},
-		],
-		fragmentSpreads: [],
-		kind: 'Object',
-		schemaType: schema.getType('Planet') as GraphQLObjectType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [
+		    Object {
+		      "exportName": null,
+		      "fieldName": "name",
+		      "resultFieldName": "name",
+		      "schemaType": "String",
+		      "type": Object {
+		        "kind": "Scalar",
+		        "knownPossibleValues": null,
+		        "schemaType": "String",
+		      },
+		    },
+		  ],
+		  "fragmentSpreads": Array [],
+		  "kind": "Object",
+		  "schemaType": "Planet",
+		}
+	`);
 });
 
 test('Can map super simple fragment - with undefined other fragment', () => {
@@ -65,25 +67,26 @@ test('Can map super simple fragment - with undefined other fragment', () => {
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		fields: [
-			{
-				exportName: null,
-				fieldName: 'name',
-				resultFieldName: 'name',
-				schemaType: GraphQLString,
-				type: {
-					kind: 'Scalar',
-					knownPossibleValues: null,
-					schemaType: GraphQLString,
-				},
-			},
-		],
-		fragmentSpreads: [],
-		kind: 'Object',
-		schemaType: schema.getType('Planet') as GraphQLObjectType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [
+		    Object {
+		      "exportName": null,
+		      "fieldName": "name",
+		      "resultFieldName": "name",
+		      "schemaType": "String",
+		      "type": Object {
+		        "kind": "Scalar",
+		        "knownPossibleValues": null,
+		        "schemaType": "String",
+		      },
+		    },
+		  ],
+		  "fragmentSpreads": Array [],
+		  "kind": "Object",
+		  "schemaType": "Planet",
+		}
+	`);
 });
 
 test('Can map super simple plural fragment', () => {
@@ -91,29 +94,30 @@ test('Can map super simple plural fragment', () => {
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		elementType: {
-			fields: [
-				{
-					exportName: null,
-					fieldName: 'name',
-					resultFieldName: 'name',
-					schemaType: GraphQLString,
-					type: {
-						kind: 'Scalar',
-						knownPossibleValues: null,
-						schemaType: GraphQLString,
-					},
-				},
-			],
-			fragmentSpreads: [],
-			kind: 'Object',
-			schemaType: schema.getType('Planet') as GraphQLObjectType,
-		},
-		kind: 'List',
-		schemaType: new GraphQLList(schema.getType('Planet')),
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "elementType": Object {
+		    "fields": Array [
+		      Object {
+		        "exportName": null,
+		        "fieldName": "name",
+		        "resultFieldName": "name",
+		        "schemaType": "String",
+		        "type": Object {
+		          "kind": "Scalar",
+		          "knownPossibleValues": null,
+		          "schemaType": "String",
+		        },
+		      },
+		    ],
+		    "fragmentSpreads": Array [],
+		    "kind": "Object",
+		    "schemaType": "Planet",
+		  },
+		  "kind": "List",
+		  "schemaType": "[Planet]",
+		}
+	`);
 });
 
 test('Can map aliases', () => {
@@ -121,25 +125,26 @@ test('Can map aliases', () => {
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		fields: [
-			{
-				exportName: null,
-				fieldName: 'name',
-				resultFieldName: 'newName',
-				schemaType: GraphQLString,
-				type: {
-					kind: 'Scalar',
-					knownPossibleValues: null,
-					schemaType: GraphQLString,
-				},
-			},
-		],
-		fragmentSpreads: [],
-		kind: 'Object',
-		schemaType: schema.getType('Planet') as GraphQLObjectType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [
+		    Object {
+		      "exportName": null,
+		      "fieldName": "name",
+		      "resultFieldName": "newName",
+		      "schemaType": "String",
+		      "type": Object {
+		        "kind": "Scalar",
+		        "knownPossibleValues": null,
+		        "schemaType": "String",
+		      },
+		    },
+		  ],
+		  "fragmentSpreads": Array [],
+		  "kind": "Object",
+		  "schemaType": "Planet",
+		}
+	`);
 });
 
 test('Can map export names', () => {
@@ -147,25 +152,26 @@ test('Can map export names', () => {
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		fields: [
-			{
-				exportName: 'MyName',
-				fieldName: 'name',
-				resultFieldName: 'name',
-				schemaType: GraphQLString,
-				type: {
-					kind: 'Scalar',
-					knownPossibleValues: null,
-					schemaType: GraphQLString,
-				},
-			},
-		],
-		fragmentSpreads: [],
-		kind: 'Object',
-		schemaType: schema.getType('Planet') as GraphQLObjectType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [
+		    Object {
+		      "exportName": "MyName",
+		      "fieldName": "name",
+		      "resultFieldName": "name",
+		      "schemaType": "String",
+		      "type": Object {
+		        "kind": "Scalar",
+		        "knownPossibleValues": null,
+		        "schemaType": "String",
+		      },
+		    },
+		  ],
+		  "fragmentSpreads": Array [],
+		  "kind": "Object",
+		  "schemaType": "Planet",
+		}
+	`);
 });
 
 test('Can map inline fragment spreads', () => {
@@ -173,32 +179,33 @@ test('Can map inline fragment spreads', () => {
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		fields: [],
-		fragmentSpreads: [
-			{
-				fields: [
-					{
-						exportName: null,
-						fieldName: 'name',
-						resultFieldName: 'name',
-						schemaType: GraphQLString,
-						type: {
-							kind: 'Scalar',
-							knownPossibleValues: null,
-							schemaType: GraphQLString,
-						},
-					},
-				],
-				fragmentSpreads: [],
-				kind: 'Object',
-				schemaType: schema.getType('Planet') as GraphQLObjectType,
-			},
-		],
-		kind: 'Object',
-		schemaType: schema.getType('Node') as GraphQLInterfaceType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [],
+		  "fragmentSpreads": Array [
+		    Object {
+		      "fields": Array [
+		        Object {
+		          "exportName": null,
+		          "fieldName": "name",
+		          "resultFieldName": "name",
+		          "schemaType": "String",
+		          "type": Object {
+		            "kind": "Scalar",
+		            "knownPossibleValues": null,
+		            "schemaType": "String",
+		          },
+		        },
+		      ],
+		      "fragmentSpreads": Array [],
+		      "kind": "Object",
+		      "schemaType": "Planet",
+		    },
+		  ],
+		  "kind": "Object",
+		  "schemaType": "Node",
+		}
+	`);
 });
 
 test('Can map multiple inline fragment spreads', () => {
@@ -206,61 +213,62 @@ test('Can map multiple inline fragment spreads', () => {
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		fields: [],
-		fragmentSpreads: [
-			{
-				fields: [
-					{
-						exportName: null,
-						fieldName: 'name',
-						resultFieldName: 'name',
-						schemaType: GraphQLString,
-						type: {
-							kind: 'Scalar',
-							knownPossibleValues: null,
-							schemaType: GraphQLString,
-						},
-					},
-				],
-				fragmentSpreads: [],
-				kind: 'Object',
-				schemaType: schema.getType('Planet') as GraphQLObjectType,
-			},
-			{
-				fields: [
-					{
-						exportName: null,
-						fieldName: 'gender',
-						resultFieldName: 'gender',
-						schemaType: GraphQLString,
-						type: {
-							kind: 'Scalar',
-							knownPossibleValues: null,
-							schemaType: GraphQLString,
-						},
-					},
-					{
-						exportName: null,
-						fieldName: 'birthYear',
-						resultFieldName: 'birthYear',
-						schemaType: GraphQLString,
-						type: {
-							kind: 'Scalar',
-							knownPossibleValues: null,
-							schemaType: GraphQLString,
-						},
-					},
-				],
-				fragmentSpreads: [],
-				kind: 'Object',
-				schemaType: schema.getType('Person') as GraphQLObjectType,
-			},
-		],
-		kind: 'Object',
-		schemaType: schema.getType('Node') as GraphQLInterfaceType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [],
+		  "fragmentSpreads": Array [
+		    Object {
+		      "fields": Array [
+		        Object {
+		          "exportName": null,
+		          "fieldName": "name",
+		          "resultFieldName": "name",
+		          "schemaType": "String",
+		          "type": Object {
+		            "kind": "Scalar",
+		            "knownPossibleValues": null,
+		            "schemaType": "String",
+		          },
+		        },
+		      ],
+		      "fragmentSpreads": Array [],
+		      "kind": "Object",
+		      "schemaType": "Planet",
+		    },
+		    Object {
+		      "fields": Array [
+		        Object {
+		          "exportName": null,
+		          "fieldName": "gender",
+		          "resultFieldName": "gender",
+		          "schemaType": "String",
+		          "type": Object {
+		            "kind": "Scalar",
+		            "knownPossibleValues": null,
+		            "schemaType": "String",
+		          },
+		        },
+		        Object {
+		          "exportName": null,
+		          "fieldName": "birthYear",
+		          "resultFieldName": "birthYear",
+		          "schemaType": "String",
+		          "type": Object {
+		            "kind": "Scalar",
+		            "knownPossibleValues": null,
+		            "schemaType": "String",
+		          },
+		        },
+		      ],
+		      "fragmentSpreads": Array [],
+		      "kind": "Object",
+		      "schemaType": "Person",
+		    },
+		  ],
+		  "kind": "Object",
+		  "schemaType": "Node",
+		}
+	`);
 });
 
 test('Can map mixes between field selections and fragments', () => {
@@ -268,75 +276,76 @@ test('Can map mixes between field selections and fragments', () => {
 
 	const mapped = mapFragmentType(schema, ast);
 
-	const expected: typeof mapped = {
-		fields: [
-			{
-				exportName: null,
-				fieldName: 'id',
-				resultFieldName: 'id',
-				schemaType: new GraphQLNonNull(GraphQLID),
-				type: {
-					kind: 'NonNull',
-					nullableType: {
-						kind: 'Scalar',
-						knownPossibleValues: null,
-						schemaType: GraphQLID,
-					},
-					schemaType: new GraphQLNonNull(GraphQLID),
-				},
-			},
-		],
-		fragmentSpreads: [
-			{
-				fields: [
-					{
-						exportName: null,
-						fieldName: 'name',
-						resultFieldName: 'name',
-						schemaType: GraphQLString,
-						type: {
-							kind: 'Scalar',
-							knownPossibleValues: null,
-							schemaType: GraphQLString,
-						},
-					},
-				],
-				fragmentSpreads: [],
-				kind: 'Object',
-				schemaType: schema.getType('Planet') as GraphQLObjectType,
-			},
-			{
-				fields: [
-					{
-						exportName: null,
-						fieldName: 'gender',
-						resultFieldName: 'gender',
-						schemaType: GraphQLString,
-						type: {
-							kind: 'Scalar',
-							knownPossibleValues: null,
-							schemaType: GraphQLString,
-						},
-					},
-					{
-						exportName: null,
-						fieldName: 'birthYear',
-						resultFieldName: 'birthYear',
-						schemaType: GraphQLString,
-						type: {
-							kind: 'Scalar',
-							knownPossibleValues: null,
-							schemaType: GraphQLString,
-						},
-					},
-				],
-				fragmentSpreads: [],
-				kind: 'Object',
-				schemaType: schema.getType('Person') as GraphQLObjectType,
-			},
-		],
-		kind: 'Object',
-		schemaType: schema.getType('Node') as GraphQLInterfaceType,
-	};
-	expect(mapped).toEqual(expected);
+	expect(mapped).toMatchInlineSnapshot(`
+		Object {
+		  "fields": Array [
+		    Object {
+		      "exportName": null,
+		      "fieldName": "id",
+		      "resultFieldName": "id",
+		      "schemaType": "ID!",
+		      "type": Object {
+		        "kind": "NonNull",
+		        "nullableType": Object {
+		          "kind": "Scalar",
+		          "knownPossibleValues": null,
+		          "schemaType": "ID",
+		        },
+		        "schemaType": "ID!",
+		      },
+		    },
+		  ],
+		  "fragmentSpreads": Array [
+		    Object {
+		      "fields": Array [
+		        Object {
+		          "exportName": null,
+		          "fieldName": "name",
+		          "resultFieldName": "name",
+		          "schemaType": "String",
+		          "type": Object {
+		            "kind": "Scalar",
+		            "knownPossibleValues": null,
+		            "schemaType": "String",
+		          },
+		        },
+		      ],
+		      "fragmentSpreads": Array [],
+		      "kind": "Object",
+		      "schemaType": "Planet",
+		    },
+		    Object {
+		      "fields": Array [
+		        Object {
+		          "exportName": null,
+		          "fieldName": "gender",
+		          "resultFieldName": "gender",
+		          "schemaType": "String",
+		          "type": Object {
+		            "kind": "Scalar",
+		            "knownPossibleValues": null,
+		            "schemaType": "String",
+		          },
+		        },
+		        Object {
+		          "exportName": null,
+		          "fieldName": "birthYear",
+		          "resultFieldName": "birthYear",
+		          "schemaType": "String",
+		          "type": Object {
+		            "kind": "Scalar",
+		            "knownPossibleValues": null,
+		            "schemaType": "String",
+		          },
+		        },
+		      ],
+		      "fragmentSpreads": Array [],
+		      "kind": "Object",
+		      "schemaType": "Person",
+		    },
+		  ],
+		  "kind": "Object",
+		  "schemaType": "Node",
+		}
+	`);
 });
